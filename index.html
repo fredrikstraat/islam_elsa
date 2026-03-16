@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Islam-Obbyn AI Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Luckiest+Guy&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="sky"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <main class="app-shell">
+      <header class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">AI Quest Mode</p>
+          <h1>Islam-Obbyn</h1>
+          <p class="hero-text">
+            Roblox-känsla, snabba banor och en AI-domare som bedömer både flervals-
+            och textsvar utifrån faktatexten om islam.
+          </p>
+        </div>
+
+        <div class="player-card">
+          <label class="name-label" for="playerName">Spelarnamn</label>
+          <div class="name-row">
+            <input id="playerName" type="text" maxlength="18" value="Roblox-stjärna" />
+            <button id="saveNameButton" class="secondary-button" type="button">Spara</button>
+          </div>
+
+          <div class="status-stack">
+            <div class="status-box">
+              <span class="status-label">AI-domare</span>
+              <strong id="aiStatusValue" class="status-value">Startar...</strong>
+              <span id="aiStatusHint" class="status-hint">Kollar server och OpenAI-läge.</span>
+            </div>
+            <div id="aiStatusPill" class="status-pill">Kollar</div>
+          </div>
+
+          <p id="welcomeText" class="welcome-text">Välkommen, Roblox-stjärna!</p>
+        </div>
+      </header>
+
+      <section class="dashboard">
+        <article class="hud-card panel">
+          <span class="hud-label">Nivå</span>
+          <strong id="levelValue" class="hud-value">1</strong>
+          <div class="xp-meter">
+            <div id="xpFill" class="xp-fill"></div>
+          </div>
+          <span id="xpText" class="meter-text">0 / 60 XP</span>
+        </article>
+
+        <article class="hud-card panel">
+          <span class="hud-label">Poäng</span>
+          <strong id="scoreValue" class="hud-value">0</strong>
+          <span class="meter-text">Helt rätta svar</span>
+        </article>
+
+        <article class="hud-card panel">
+          <span class="hud-label">Streak</span>
+          <strong id="streakValue" class="hud-value">0</strong>
+          <span class="meter-text">Rätt i rad</span>
+        </article>
+
+        <article class="hud-card panel">
+          <span class="hud-label">Gems</span>
+          <strong id="gemsValue" class="hud-value">0</strong>
+          <span class="meter-text">Bonusloot</span>
+        </article>
+
+        <article class="hud-card panel">
+          <span class="hud-label">Creator</span>
+          <strong id="textWinsValue" class="hud-value">0</strong>
+          <span class="meter-text">Rätta textsvar</span>
+        </article>
+      </section>
+
+      <section class="game-grid">
+        <aside class="side-column">
+          <article class="panel mission-panel">
+            <div class="panel-heading">
+              <h2>Sidouppdrag</h2>
+              <span class="mini-tag">Bonus XP</span>
+            </div>
+            <ul id="questList" class="quest-list"></ul>
+          </article>
+
+          <article class="panel progress-panel">
+            <div class="panel-heading">
+              <h2>Banstig</h2>
+              <span id="progressText" class="mini-tag">Bana 1 av 15</span>
+            </div>
+            <div id="milestoneTrack" class="milestone-track"></div>
+          </article>
+
+          <article class="panel badges-panel">
+            <div class="panel-heading">
+              <h2>Badges</h2>
+              <span class="mini-tag">Lås upp fler</span>
+            </div>
+            <div id="badgeTray" class="badge-tray"></div>
+          </article>
+        </aside>
+
+        <section class="panel quiz-panel">
+          <div class="quiz-top">
+            <div>
+              <p id="categoryPill" class="category-pill">Fakta</p>
+              <p id="questionCount" class="question-count">Fråga 1 / 15</p>
+            </div>
+            <div class="top-actions">
+              <div id="answerModePill" class="answer-mode-pill">Flervalsfråga</div>
+              <button id="restartTopButton" class="secondary-button" type="button">Starta om</button>
+            </div>
+          </div>
+
+          <h2 id="questionText" class="question-text"></h2>
+
+          <div id="choices" class="choices" role="list"></div>
+
+          <section id="textAnswerPanel" class="text-answer-panel" hidden>
+            <label class="text-answer-label" for="textAnswer">Skriv ditt svar</label>
+            <textarea
+              id="textAnswer"
+              rows="4"
+              maxlength="120"
+              placeholder="Skriv ett kort svar. Ett eller några ord räcker ofta."
+            ></textarea>
+            <div class="submit-answer-row">
+              <span class="text-help">AI-domaren godkänner korta svar och små stavfel.</span>
+              <button id="submitTextButton" class="primary-button" type="button">
+                Skicka till AI-domaren
+              </button>
+            </div>
+          </section>
+
+          <div id="feedbackBox" class="feedback-box" aria-live="polite"></div>
+
+          <div class="action-row">
+            <button id="nextButton" class="primary-button" type="button" disabled>
+              Nästa bana
+            </button>
+          </div>
+
+          <div id="resultCard" class="result-card" hidden>
+            <p class="eyebrow">Run Clear</p>
+            <h3 id="resultTitle"></h3>
+            <p id="resultSummary" class="result-summary"></p>
+            <div id="reviewList" class="review-list"></div>
+            <div class="result-actions">
+              <button id="playAgainButton" class="primary-button" type="button">Spela igen</button>
+            </div>
+          </div>
+
+          <div id="sparkZone" class="spark-zone" aria-hidden="true"></div>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
