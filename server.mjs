@@ -32,7 +32,7 @@ async function loadEnvFile() {
 await loadEnvFile();
 
 const port = Number(process.env.PORT || 8124);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.HOST || "0.0.0.0";
 const openAiApiKey = process.env.OPENAI_API_KEY || "";
 const model = process.env.OPENAI_MODEL || "gpt-5-mini";
 
