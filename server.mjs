@@ -33,7 +33,9 @@ await loadEnvFile();
 
 const port = Number(process.env.PORT || 8124);
 const host = process.env.HOST || "0.0.0.0";
-const openAiApiKey = process.env.OPENAI_API_KEY || "";
+const openAiApiKey = String(process.env.OPENAI_API_KEY || "")
+  .split(/\s+/)
+  .find((value) => value.startsWith("sk-")) || "";
 const model = process.env.OPENAI_MODEL || "gpt-5-mini";
 
 const publicFiles = new Map([
