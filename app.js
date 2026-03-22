@@ -677,7 +677,7 @@ function applyGrade(question, userAnswer, grade) {
     <br />
     <b>Rätt svar:</b> ${escapeHtml(grade.correct_answer || question.correctAnswer || "")}
     <br />
-    <b>Coach:</b> ${escapeHtml(grade.coach_tip || "Bra jobbat, fortsätt så.")}
+    <b>Nästa steg:</b> ${escapeHtml(grade.coach_tip || "Bra jobbat, fortsätt så.")}
   `;
 
   if (verdict === "correct") {
