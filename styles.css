@@ -216,7 +216,8 @@ textarea {
 .status-pill,
 .mini-tag,
 .category-pill,
-.answer-mode-pill {
+.answer-mode-pill,
+.difficulty-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -428,6 +429,21 @@ textarea {
 .answer-mode-pill {
   background: rgba(20, 195, 198, 0.14);
   color: var(--teal-dark);
+}
+
+.difficulty-pill.easy {
+  background: rgba(89, 217, 142, 0.18);
+  color: #207a49;
+}
+
+.difficulty-pill.medium {
+  background: rgba(255, 225, 106, 0.28);
+  color: #986401;
+}
+
+.difficulty-pill.hard {
+  background: rgba(255, 102, 120, 0.18);
+  color: #b22246;
 }
 
 .question-text {

@@ -1,6 +1,7 @@
 [
   {
     "id": "followers",
+    "difficulty": "easy",
     "type": "choice",
     "category": "Grundfakta",
     "question": "Vad kallas islams anhängare?",
@@ -12,6 +13,7 @@
   },
   {
     "id": "meaning-islam",
+    "difficulty": "easy",
     "type": "text",
     "category": "Grundfakta",
     "question": "Vad betyder ordet islam?",
@@ -21,7 +23,32 @@
     "explanation": "I texten står att ordet islam betyder underkastelse."
   },
   {
+    "id": "meaning-muslim",
+    "difficulty": "easy",
+    "type": "choice",
+    "category": "Grundfakta",
+    "question": "Vad betyder ordet muslim enligt texten?",
+    "options": ["En som underkastar sig", "En som predikar", "En som reser", "En som bygger moskéer"],
+    "correctAnswer": "En som underkastar sig",
+    "acceptedAnswers": ["en som underkastar sig", "underkastar sig"],
+    "sourceExcerpt": "Muslim betyder 'en som underkastar sig'.",
+    "explanation": "Texten förklarar att muslim betyder en som underkastar sig."
+  },
+  {
+    "id": "one-god",
+    "difficulty": "easy",
+    "type": "choice",
+    "category": "Gud",
+    "question": "Hur många gudar tror muslimer på enligt texten?",
+    "options": ["En", "Två", "Tre", "Sju"],
+    "correctAnswer": "En",
+    "acceptedAnswers": ["en", "en gud"],
+    "sourceExcerpt": "Muslimerna tror bara på en gud, Allah.",
+    "explanation": "Texten säger att muslimer tror på en gud, Allah."
+  },
+  {
     "id": "prophet",
+    "difficulty": "easy",
     "type": "choice",
     "category": "Gud och profeten",
     "question": "Vad hette profeten som kallas Guds budbärare?",
@@ -32,49 +59,8 @@
     "explanation": "Muhammed beskrivs som Guds budbärare i faktatexten."
   },
   {
-    "id": "prayer-count",
-    "type": "text",
-    "category": "De fem pelarna",
-    "question": "Hur många gånger per dag ska man be enligt texten?",
-    "correctAnswer": "Fem gånger per dag",
-    "acceptedAnswers": ["fem", "5", "fem gånger", "fem gånger per dag"],
-    "sourceExcerpt": "Bönen – Fem gånger per dag ska man be.",
-    "explanation": "En av de fem grundpelarna är att be fem gånger per dag."
-  },
-  {
-    "id": "prayer-direction",
-    "type": "choice",
-    "category": "De fem pelarna",
-    "question": "Vilken stad ska man vara vänd mot när man ber?",
-    "options": ["Medina", "Mekka", "Kairo", "Bagdad"],
-    "correctAnswer": "Mekka",
-    "acceptedAnswers": ["mekka"],
-    "sourceExcerpt": "När man ber ska man vara vänd mot Mekka, muslimernas heliga stad.",
-    "explanation": "Texten säger att man ska vara vänd mot Mekka."
-  },
-  {
-    "id": "fasting-month",
-    "type": "text",
-    "category": "De fem pelarna",
-    "question": "Vad heter månaden då varje muslim ska fasta?",
-    "correctAnswer": "Ramadan",
-    "acceptedAnswers": ["ramadan"],
-    "sourceExcerpt": "Denna månad kallas för Ramadan.",
-    "explanation": "Fastemånaden heter Ramadan."
-  },
-  {
-    "id": "kaba",
-    "type": "choice",
-    "category": "De fem pelarna",
-    "question": "Vad kallas den svarta byggnaden som man går sju varv runt?",
-    "options": ["Moské", "Kaba", "Minaret", "Sura"],
-    "correctAnswer": "Kaba",
-    "acceptedAnswers": ["kaba"],
-    "sourceExcerpt": "Man går sju varv motsols runt en svart byggnad som kallas Kaba.",
-    "explanation": "Under vallfärden går man runt Kaba."
-  },
-  {
     "id": "holy-book",
+    "difficulty": "easy",
     "type": "text",
     "category": "Helig skrift",
     "question": "Vad heter islams heliga skrift?",
@@ -84,39 +70,8 @@
     "explanation": "Faktatexten säger att Koranen är islams heliga skrift."
   },
   {
-    "id": "angel",
-    "type": "choice",
-    "category": "Helig skrift",
-    "question": "Vem gav Muhammed uppenbarelser från Gud enligt texten?",
-    "options": ["Ängeln Gabriel", "Imamen", "Abraham", "En kung"],
-    "correctAnswer": "Ängeln Gabriel",
-    "acceptedAnswers": ["ängeln gabriel", "gabriel"],
-    "sourceExcerpt": "Profeten Muhammed fick uppenbarelser från Gud av ängeln Gabriel.",
-    "explanation": "Gabriel nämns som ängeln som förmedlade uppenbarelserna."
-  },
-  {
-    "id": "suras-count",
-    "type": "text",
-    "category": "Helig skrift",
-    "question": "Hur många kapitel, suror, är Koranen indelad i?",
-    "correctAnswer": "114",
-    "acceptedAnswers": ["114", "114 kapitel", "114 suror"],
-    "sourceExcerpt": "Koranen är indelad i 114 kapitel som kallas suror.",
-    "explanation": "I texten står det att Koranen har 114 kapitel."
-  },
-  {
-    "id": "eid-fitr",
-    "type": "choice",
-    "category": "Högtider",
-    "question": "Vilken högtid firas när Ramadan är slut?",
-    "options": ["Eid al-fitr", "Eid al-adha", "Fredagsbönen", "Kaba-festen"],
-    "correctAnswer": "Eid al-fitr",
-    "acceptedAnswers": ["eid al-fitr", "eid al fitr"],
-    "sourceExcerpt": "Eid al-fitr firas när fastemånaden Ramadan är slut.",
-    "explanation": "Eid al-fitr kommer direkt efter Ramadan."
-  },
-  {
     "id": "mosque-name",
+    "difficulty": "easy",
     "type": "text",
     "category": "Moské",
     "question": "Vad heter muslimernas gudstjänstlokal?",
@@ -127,6 +82,7 @@
   },
   {
     "id": "minaret",
+    "difficulty": "easy",
     "type": "choice",
     "category": "Moské",
     "question": "Vad kallas det höga smala tornet vid en moské?",
@@ -137,17 +93,137 @@
     "explanation": "Det höga tornet vid moskén kallas minaret."
   },
   {
-    "id": "after-death",
+    "id": "imam",
+    "difficulty": "easy",
+    "type": "choice",
+    "category": "Moské",
+    "question": "Vad kallas en muslimsk präst enligt texten?",
+    "options": ["Imam", "Rabbin", "Pastor", "Munk"],
+    "correctAnswer": "Imam",
+    "acceptedAnswers": ["imam"],
+    "sourceExcerpt": "En muslimsk 'präst' kallas imam.",
+    "explanation": "I texten står det att en muslimsk präst kallas imam."
+  },
+  {
+    "id": "no-alcohol",
+    "difficulty": "easy",
+    "type": "choice",
+    "category": "Maten",
+    "question": "Vad dricker en muslim inte enligt texten?",
+    "options": ["Alkohol", "Mjölk", "Vatten", "Te"],
+    "correctAnswer": "Alkohol",
+    "acceptedAnswers": ["alkohol"],
+    "sourceExcerpt": "En muslim dricker inte alkohol.",
+    "explanation": "Texten säger att en muslim inte dricker alkohol."
+  },
+  {
+    "id": "born-city",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "Gud och profeten",
+    "question": "I vilken stad föddes Muhammed enligt texten?",
+    "options": ["Mekka", "Medina", "Bagdad", "Jerusalem"],
+    "correctAnswer": "Mekka",
+    "acceptedAnswers": ["mekka"],
+    "sourceExcerpt": "Muhammed föddes cirka 570 e. Kr. i Mekka.",
+    "explanation": "Texten säger att Muhammed föddes i Mekka."
+  },
+  {
+    "id": "prayer-count",
+    "difficulty": "medium",
     "type": "text",
-    "category": "Livet efter döden",
-    "question": "Vad händer med den döde enligt texten?",
-    "correctAnswer": "Den döde återvänder till Gud",
-    "acceptedAnswers": ["återvänder till gud", "till gud", "den döde återvänder till gud"],
-    "sourceExcerpt": "För en muslim är döden inte slutet. Den döde återvänder till Gud.",
-    "explanation": "Texten säger att den döde återvänder till Gud."
+    "category": "De fem pelarna",
+    "question": "Hur många gånger per dag ska man be enligt texten?",
+    "correctAnswer": "Fem gånger per dag",
+    "acceptedAnswers": ["fem", "5", "fem gånger", "fem gånger per dag"],
+    "sourceExcerpt": "Bönen – Fem gånger per dag ska man be.",
+    "explanation": "En av de fem grundpelarna är att be fem gånger per dag."
+  },
+  {
+    "id": "prayer-direction",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "De fem pelarna",
+    "question": "Vilken stad ska man vara vänd mot när man ber?",
+    "options": ["Mekka", "Kairo", "Teheran", "Bagdad"],
+    "correctAnswer": "Mekka",
+    "acceptedAnswers": ["mekka"],
+    "sourceExcerpt": "När man ber ska man vara vänd mot Mekka, muslimernas heliga stad.",
+    "explanation": "Texten säger att man ska vara vänd mot Mekka."
+  },
+  {
+    "id": "fasting-month",
+    "difficulty": "medium",
+    "type": "text",
+    "category": "De fem pelarna",
+    "question": "Vad heter månaden då varje muslim ska fasta?",
+    "correctAnswer": "Ramadan",
+    "acceptedAnswers": ["ramadan"],
+    "sourceExcerpt": "Denna månad kallas för Ramadan.",
+    "explanation": "Fastemånaden heter Ramadan."
+  },
+  {
+    "id": "gifts-to-poor",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "De fem pelarna",
+    "question": "Hur hjälper man fattiga enligt texten?",
+    "options": ["Genom att betala en avgift en gång per år", "Genom att fasta två månader", "Genom att bygga ett torn", "Genom att gå tio varv runt Kaba"],
+    "correctAnswer": "Genom att betala en avgift en gång per år",
+    "acceptedAnswers": ["betala en avgift en gång per år", "avgift en gång per år"],
+    "sourceExcerpt": "Det gör man genom att betala en avgift en gång per år.",
+    "explanation": "Texten säger att man hjälper fattiga genom en årlig avgift."
+  },
+  {
+    "id": "kaba",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "De fem pelarna",
+    "question": "Vad kallas den svarta byggnaden som man går runt under vallfärden?",
+    "options": ["Kaba", "Moské", "Minaret", "Sura"],
+    "correctAnswer": "Kaba",
+    "acceptedAnswers": ["kaba"],
+    "sourceExcerpt": "Man går sju varv motsols runt en svart byggnad som kallas Kaba.",
+    "explanation": "Under vallfärden går man runt Kaba."
+  },
+  {
+    "id": "laps-around-kaba",
+    "difficulty": "medium",
+    "type": "text",
+    "category": "De fem pelarna",
+    "question": "Hur många varv går man runt Kaba enligt texten?",
+    "correctAnswer": "Sju varv",
+    "acceptedAnswers": ["sju", "7", "sju varv", "sju gånger"],
+    "sourceExcerpt": "Man går sju varv motsols runt en svart byggnad som kallas Kaba.",
+    "explanation": "Texten säger att man går sju varv runt Kaba."
+  },
+  {
+    "id": "angel",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "Helig skrift",
+    "question": "Vem gav Muhammed uppenbarelser från Gud enligt texten?",
+    "options": ["Ängeln Gabriel", "Abraham", "Imamen", "Ismael"],
+    "correctAnswer": "Ängeln Gabriel",
+    "acceptedAnswers": ["ängeln gabriel", "gabriel"],
+    "sourceExcerpt": "Profeten Muhammed fick uppenbarelser från Gud av ängeln Gabriel.",
+    "explanation": "Gabriel nämns som ängeln som förmedlade uppenbarelserna."
+  },
+  {
+    "id": "eid-fitr",
+    "difficulty": "medium",
+    "type": "choice",
+    "category": "Högtider",
+    "question": "Vilken högtid firas när Ramadan är slut?",
+    "options": ["Eid al-fitr", "Eid al-adha", "Fredagsbönen", "Kaba-festen"],
+    "correctAnswer": "Eid al-fitr",
+    "acceptedAnswers": ["eid al-fitr", "eid al fitr"],
+    "sourceExcerpt": "Eid al-fitr firas när fastemånaden Ramadan är slut.",
+    "explanation": "Eid al-fitr kommer direkt efter Ramadan."
   },
   {
     "id": "eid-adha",
+    "difficulty": "medium",
     "type": "text",
     "category": "Högtider",
     "question": "Vad heter offerhögtiden som firas efter vallfärden till Mekka?",
@@ -155,5 +231,122 @@
     "acceptedAnswers": ["eid al-adha", "eid al adha"],
     "sourceExcerpt": "Eid al-adha är en offerhögtid som firas dagen efter att vallfärden till Mekka har avslutats.",
     "explanation": "Offerhögtiden efter vallfärden heter eid al-adha."
+  },
+  {
+    "id": "second-largest",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Grundfakta",
+    "question": "Vilken plats har islam bland världens religioner enligt texten?",
+    "options": ["Den näst största religionen", "Den största religionen", "Den tredje största religionen", "Den minsta religionen"],
+    "correctAnswer": "Den näst största religionen",
+    "acceptedAnswers": ["den näst största religionen", "näst största"],
+    "sourceExcerpt": "I Sverige och i världen är islam den näst största religionen.",
+    "explanation": "Texten säger att islam är den näst största religionen."
+  },
+  {
+    "id": "shia-where",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Grundfakta",
+    "question": "Var finns shia framför allt enligt texten?",
+    "options": ["Iran och södra Irak", "Indonesien och Pakistan", "Mekka och Medina", "Sverige och Norge"],
+    "correctAnswer": "Iran och södra Irak",
+    "acceptedAnswers": ["iran och södra irak", "iran", "södra irak"],
+    "sourceExcerpt": "Shia finns i framför allt Iran och södra Irak.",
+    "explanation": "Texten säger att shia framför allt finns i Iran och södra Irak."
+  },
+  {
+    "id": "wash-before-prayer",
+    "difficulty": "hard",
+    "type": "text",
+    "category": "De fem pelarna",
+    "question": "Vad gör man före bönen enligt texten?",
+    "correctAnswer": "Man tvättar sig",
+    "acceptedAnswers": ["man tvättar sig", "tvättar sig", "tvättar händer mun näsa ansikte underarmar huvud och fötter", "tvättar händer mun näsa ansikte underarmar huvud fötter"],
+    "sourceExcerpt": "Före bönen tvättar man händer, mun, näsa, ansikte, underarmar, huvud och fötter.",
+    "explanation": "Texten säger att man tvättar sig före bönen."
+  },
+  {
+    "id": "animals-slaughtered",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Maten",
+    "question": "I vilken riktning ska djur vara slaktade enligt texten?",
+    "options": ["Mot Mekka", "Mot Medina", "Mot solen", "Mot norr"],
+    "correctAnswer": "Mot Mekka",
+    "acceptedAnswers": ["mot mekka", "mekka"],
+    "sourceExcerpt": "Alla djur ska dessutom vara slaktade i riktning mot Mekka.",
+    "explanation": "Texten säger att djur ska vara slaktade i riktning mot Mekka."
+  },
+  {
+    "id": "suras-count",
+    "difficulty": "hard",
+    "type": "text",
+    "category": "Helig skrift",
+    "question": "Hur många kapitel, suror, är Koranen indelad i?",
+    "correctAnswer": "114",
+    "acceptedAnswers": ["114", "114 kapitel", "114 suror"],
+    "sourceExcerpt": "Koranen är indelad i 114 kapitel som kallas suror.",
+    "explanation": "I texten står det att Koranen har 114 kapitel."
+  },
+  {
+    "id": "arabic-language",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Helig skrift",
+    "question": "Vilket språk är Koranen skriven på enligt texten?",
+    "options": ["Arabiska", "Persiska", "Turkiska", "Latin"],
+    "correctAnswer": "Arabiska",
+    "acceptedAnswers": ["arabiska"],
+    "sourceExcerpt": "Den är skriven på arabiska. Arabiska har därför blivit islams språk.",
+    "explanation": "Texten säger att Koranen är skriven på arabiska."
+  },
+  {
+    "id": "translation-paraphrase",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Helig skrift",
+    "question": "Varför kallas översättningar av Koranen egentligen omskrivningar enligt texten?",
+    "options": ["För att Koranen anses vara Guds ord och därför inte kan översättas", "För att den bara får läsas i moskén", "För att den är hemlig", "För att den bara har bilder"],
+    "correctAnswer": "För att Koranen anses vara Guds ord och därför inte kan översättas",
+    "acceptedAnswers": ["för att koranen anses vara guds ord och därför inte kan översättas", "guds ord kan inte översättas"],
+    "sourceExcerpt": "Eftersom Koranen är Guds ord kan den inte översättas. De översättningar som finns är därför egentligen omskrivningar.",
+    "explanation": "Texten säger att Koranen anses vara Guds ord och därför inte kan översättas."
+  },
+  {
+    "id": "black-stone",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "De fem pelarna",
+    "question": "Varifrån kommer den svarta stenen enligt legenden?",
+    "options": ["Från paradiset", "Från havet", "Från öknen", "Från ett tempel"],
+    "correctAnswer": "Från paradiset",
+    "acceptedAnswers": ["från paradiset", "paradiset"],
+    "sourceExcerpt": "I ena hörnet av byggnaden finns en svart sten som enligt legenden kommer från paradiset.",
+    "explanation": "Texten säger att stenen enligt legenden kommer från paradiset."
+  },
+  {
+    "id": "friday-prayer",
+    "difficulty": "hard",
+    "type": "choice",
+    "category": "Moské",
+    "question": "Vilken bön är viktigast under veckan enligt texten?",
+    "options": ["Fredagens middagsbön", "Måndagens morgonbön", "Torsdagens kvällsbön", "Lördagens nattbön"],
+    "correctAnswer": "Fredagens middagsbön",
+    "acceptedAnswers": ["fredagens middagsbön", "fredagsbönen"],
+    "sourceExcerpt": "Den viktigaste bönen under veckan är fredagens middagsbön.",
+    "explanation": "Texten säger att fredagens middagsbön är viktigast under veckan."
+  },
+  {
+    "id": "after-death",
+    "difficulty": "hard",
+    "type": "text",
+    "category": "Livet efter döden",
+    "question": "Vad händer med den döde enligt texten?",
+    "correctAnswer": "Den döde återvänder till Gud",
+    "acceptedAnswers": ["återvänder till gud", "till gud", "den döde återvänder till gud"],
+    "sourceExcerpt": "För en muslim är döden inte slutet. Den döde återvänder till Gud.",
+    "explanation": "Texten säger att den döde återvänder till Gud."
   }
 ]

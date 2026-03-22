@@ -2,6 +2,7 @@ const badgeConfig = [
   { id: "spawn", icon: "S", name: "Spawn Boost", description: "Få ditt första rätta svar." },
   { id: "combo", icon: "C", name: "Combo Cube", description: "Få 3 rätta i rad." },
   { id: "creator", icon: "T", name: "Text Titan", description: "Klara 3 textfrågor rätt." },
+  { id: "boss", icon: "B", name: "Boss Rush", description: "Klara 2 svåra frågor rätt." },
   { id: "eid", icon: "E", name: "Eid Expert", description: "Klara båda eid-frågorna." },
   { id: "perfect", icon: "P", name: "Perfect Run", description: "Gå igenom hela banan utan fel." }
 ];
@@ -20,14 +21,44 @@ const questConfig = [
     description: "Klara 3 textfrågor rätt."
   },
   {
-    id: "level-up",
+    id: "hard-mode",
     icon: "3",
-    title: "Levla upp",
-    description: "Nå minst nivå 3."
+    title: "Boss mode",
+    description: "Klara 2 svåra frågor rätt."
   }
 ];
 
 const xpGoal = 60;
+const runPlan = {
+  easy: 6,
+  medium: 6,
+  hard: 6
+};
+
+const difficultyConfig = {
+  easy: {
+    label: "Lätt",
+    intro: "Uppvärmning",
+    xpBonus: 0,
+    gemBonus: 0,
+    className: "easy"
+  },
+  medium: {
+    label: "Mellan",
+    intro: "Nu blir det klurigare",
+    xpBonus: 4,
+    gemBonus: 1,
+    className: "medium"
+  },
+  hard: {
+    label: "Svår",
+    intro: "Bossfråga",
+    xpBonus: 8,
+    gemBonus: 2,
+    className: "hard"
+  }
+};
+
 const scoreRules = {
   correct: { score: 1, xp: (streak) => 14 + Math.min(streak * 2, 12), gems: (streak) => 10 + Math.max(streak - 1, 0) * 2 },
   almost: { score: 0, xp: () => 8, gems: () => 4 },
@@ -54,6 +85,7 @@ const elements = {
   badgeTray: document.querySelector("#badgeTray"),
   categoryPill: document.querySelector("#categoryPill"),
   questionCount: document.querySelector("#questionCount"),
+  difficultyPill: document.querySelector("#difficultyPill"),
   answerModePill: document.querySelector("#answerModePill"),
   questionText: document.querySelector("#questionText"),
   choices: document.querySelector("#choices"),
@@ -93,6 +125,57 @@ function shuffle(items) {
   return copy;
 }
 
+function normalizeDifficulty(value) {
+  return difficultyConfig[value] ? value : "medium";
+}
+
+function getDifficultyInfo(difficulty) {
+  return difficultyConfig[normalizeDifficulty(difficulty)];
+}
+
+function buildQuestionRun(allQuestions) {
+  const grouped = {
+    easy: [],
+    medium: [],
+    hard: []
+  };
+
+  allQuestions.forEach((question) => {
+    grouped[normalizeDifficulty(question.difficulty)].push(question);
+  });
+
+  const ordered = [];
+  for (const difficulty of ["easy", "medium", "hard"]) {
+    ordered.push(...shuffle(grouped[difficulty]).slice(0, runPlan[difficulty]));
+  }
+
+  const selectedIds = new Set(ordered.map((question) => question.id));
+  const leftovers = shuffle(allQuestions.filter((question) => !selectedIds.has(question.id)));
+  const targetCount = Object.values(runPlan).reduce((sum, count) => sum + count, 0);
+
+  while (ordered.length < targetCount && leftovers.length > 0) {
+    ordered.push(leftovers.pop());
+  }
+
+  return ordered.map((question) => ({
+    ...question,
+    difficulty: normalizeDifficulty(question.difficulty),
+    options: question.options ? shuffle(question.options) : undefined,
+    selected: null,
+    verdict: null
+  }));
+}
+
+function getRewardBundle(verdict, streak, difficulty) {
+  const baseRules = scoreRules[verdict];
+  const difficultyInfo = getDifficultyInfo(difficulty);
+  return {
+    score: baseRules.score,
+    xp: baseRules.xp(streak) + difficultyInfo.xpBonus,
+    gems: baseRules.gems(streak) + difficultyInfo.gemBonus
+  };
+}
+
 function makeInitialState() {
   return {
     currentIndex: 0,
@@ -102,6 +185,7 @@ function makeInitialState() {
     gems: 0,
     xp: 0,
     textWins: 0,
+    hardWins: 0,
     answers: [],
     questionResults: {},
     unlockedBadges: new Set(),
@@ -154,12 +238,7 @@ async function loadQuestions() {
   }
 
   const loaded = await response.json();
-  return shuffle(loaded).map((question) => ({
-    ...question,
-    options: question.options ? shuffle(question.options) : undefined,
-    selected: null,
-    verdict: null
-  }));
+  return buildQuestionRun(loaded);
 }
 
 async function refreshAiStatus() {
@@ -215,7 +294,7 @@ function updateHud() {
   elements.scoreValue.textContent = String(state.score);
   elements.streakValue.textContent = String(state.streak);
   elements.gemsValue.textContent = String(state.gems);
-  elements.textWinsValue.textContent = String(state.textWins);
+  elements.textWinsValue.textContent = String(state.hardWins);
   elements.xpFill.style.width = `${(getProgressXp() / xpGoal) * 100}%`;
   elements.xpText.textContent = `${getProgressXp()} / ${xpGoal} XP`;
 }
@@ -234,7 +313,7 @@ function renderMilestones() {
       step.classList.add("current");
     }
     step.textContent = String(index + 1);
-    step.title = question.question;
+    step.title = `${question.question} (${getDifficultyInfo(question.difficulty).label})`;
     elements.milestoneTrack.append(step);
   });
 }
@@ -246,7 +325,7 @@ function questStatuses() {
   return {
     "three-streak": state.bestStreak >= 3,
     "text-pro": state.textWins >= 3,
-    "level-up": getLevel() >= 3,
+    "hard-mode": state.hardWins >= 2,
     "eid-pair": eidDone
   };
 }
@@ -305,9 +384,12 @@ function renderQuestion() {
     return;
   }
 
+  const difficultyInfo = getDifficultyInfo(current.difficulty);
   elements.resultCard.hidden = true;
   elements.categoryPill.textContent = current.category;
   elements.questionCount.textContent = `Fråga ${state.currentIndex + 1} / ${questions.length}`;
+  elements.difficultyPill.textContent = difficultyInfo.label;
+  elements.difficultyPill.className = `difficulty-pill ${difficultyInfo.className}`;
   elements.questionText.textContent = current.question;
   elements.answerModePill.textContent = current.type === "text" ? "Textfråga" : "Flervalsfråga";
   elements.nextButton.disabled = true;
@@ -317,7 +399,7 @@ function renderQuestion() {
   elements.submitTextButton.disabled = false;
   elements.feedbackBox.className = "feedback-box";
   elements.feedbackBox.innerHTML = `
-    <strong>Klar för nästa hopp?</strong>
+    <strong>${difficultyInfo.intro}</strong>
     ${current.type === "text" ? "Skriv ett kort svar och skicka det till AI-domaren." : "Tryck på det svar du tror stämmer med faktatexten."}
   `;
 
@@ -368,6 +450,9 @@ function evaluateBadges() {
   }
   if (state.textWins >= 3) {
     awardBadge("creator", "Badge upplåst: Text Titan!");
+  }
+  if (state.hardWins >= 2) {
+    awardBadge("boss", "Badge upplåst: Boss Rush!");
   }
 
   const eidQuestions = questions.filter((question) => question.category === "Högtider");
@@ -489,7 +574,8 @@ async function gradeAnswer(rawAnswer) {
 
 function applyGrade(question, userAnswer, grade) {
   const verdict = ["correct", "almost", "incorrect"].includes(grade.verdict) ? grade.verdict : "incorrect";
-  const rules = scoreRules[verdict];
+  const nextStreak = verdict === "correct" ? state.streak + 1 : 0;
+  const rewards = getRewardBundle(verdict, nextStreak, question.difficulty);
 
   question.selected = userAnswer;
   question.verdict = verdict;
@@ -499,25 +585,27 @@ function applyGrade(question, userAnswer, grade) {
     verdict,
     selected: userAnswer,
     correctAnswer: grade.correct_answer || question.correctAnswer || "",
-    category: question.category
+    category: question.category,
+    difficulty: question.difficulty
   });
   state.questionResults[question.id] = verdict === "correct";
 
   if (verdict === "correct") {
-    state.score += rules.score;
-    state.streak += 1;
+    state.score += rewards.score;
+    state.streak = nextStreak;
     state.bestStreak = Math.max(state.bestStreak, state.streak);
     if (question.type === "text") {
       state.textWins += 1;
+    }
+    if (question.difficulty === "hard") {
+      state.hardWins += 1;
     }
   } else {
     state.streak = 0;
   }
 
-  const gainedXp = rules.xp(state.streak);
-  const gainedGems = rules.gems(state.streak);
-  state.xp += gainedXp;
-  state.gems += gainedGems;
+  state.xp += rewards.xp;
+  state.gems += rewards.gems;
 
   if (question.type === "choice") {
     markChoiceButtons(userAnswer, grade.correct_answer || question.correctAnswer);
@@ -526,7 +614,7 @@ function applyGrade(question, userAnswer, grade) {
   const feedbackClass = verdict === "correct" ? "good" : verdict === "almost" ? "okay" : "bad";
   elements.feedbackBox.className = `feedback-box ${feedbackClass}`;
   elements.feedbackBox.innerHTML = `
-    <strong>${escapeHtml(grade.feedback_title || "Svar bedömt")} +${gainedXp} XP</strong>
+    <strong>${escapeHtml(grade.feedback_title || "Svar bedömt")} +${rewards.xp} XP</strong>
     ${escapeHtml(grade.feedback_text || "")}
     <br />
     <b>Rätt svar:</b> ${escapeHtml(grade.correct_answer || question.correctAnswer || "")}
@@ -563,16 +651,18 @@ function showResults() {
 
   elements.categoryPill.textContent = "Målgång";
   elements.questionCount.textContent = `Klar! ${state.score} / ${questions.length}`;
+  elements.difficultyPill.textContent = "Mix";
+  elements.difficultyPill.className = "difficulty-pill medium";
   elements.answerModePill.textContent = "Run clear";
   elements.questionText.textContent = `${elements.playerName.value || "Spelare"}, din run är klar.`;
   elements.choices.innerHTML = "";
   elements.textAnswerPanel.hidden = true;
   elements.feedbackBox.className = "feedback-box good";
-  elements.feedbackBox.innerHTML = `<strong>GG!</strong> Du samlade ${state.xp} XP, ${state.gems} gems och ${state.textWins} textvinster.`;
+  elements.feedbackBox.innerHTML = `<strong>GG!</strong> Du samlade ${state.xp} XP, ${state.gems} gems, ${state.textWins} textvinster och ${state.hardWins} boss-segrar.`;
   elements.nextButton.disabled = true;
 
   elements.resultTitle.textContent = rankPlayer();
-  elements.resultSummary.textContent = `Du fick ${state.score} helt rätta svar av ${questions.length}, nådde nivå ${getLevel()} och hade som bäst en streak på ${state.bestStreak}. ${
+  elements.resultSummary.textContent = `Du fick ${state.score} helt rätta svar av ${questions.length}, nådde nivå ${getLevel()}, klarade ${state.hardWins} svåra frågor och hade som bäst en streak på ${state.bestStreak}. ${
     notPerfect.length === 0 ? "Perfekt run utan fel." : "Här kommer en snabb repetition av svar att kika extra på."
   }`;
 
@@ -580,7 +670,8 @@ function showResults() {
   if (notPerfect.length === 0) {
     const item = document.createElement("div");
     item.className = "review-item";
-    item.innerHTML = "<div class=\"badge-icon\">GG</div><div><strong>Allt satt!</strong><span>Du svarade rätt på varje fråga i hela obbyn.</span></div>";
+    item.innerHTML =
+      "<div class=\"badge-icon\">GG</div><div><strong>Allt satt!</strong><span>Du svarade rätt på varje fråga i hela obbyn.</span></div>";
     elements.reviewList.append(item);
   } else {
     notPerfect.slice(0, 5).forEach((answer) => {
@@ -590,6 +681,7 @@ function showResults() {
         <div class="badge-icon">R</div>
         <div>
           <strong>${escapeHtml(answer.question)}</strong>
+          <span>Nivå: ${escapeHtml(getDifficultyInfo(answer.difficulty).label)}</span>
           <span>Ditt svar: ${escapeHtml(answer.selected)}</span>
           <span>Rätt svar: ${escapeHtml(answer.correctAnswer)}</span>
         </div>
