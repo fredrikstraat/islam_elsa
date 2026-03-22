@@ -158,7 +158,7 @@ function getCurrentMode() {
 
 function getModePool(allQuestions, mode) {
   if (mode.textOnly) {
-    return allQuestions.filter((question) => question.type === "text" && (!question.modes || question.modes.includes("final")));
+    return allQuestions.filter((question) => question.type === "text" && Array.isArray(question.modes) && question.modes.includes("final"));
   }
   return allQuestions.filter((question) => !question.modes || question.modes.includes("standard"));
 }
@@ -454,6 +454,10 @@ function renderQuestion() {
   elements.choices.innerHTML = "";
   elements.textAnswer.value = "";
   elements.textAnswerPanel.hidden = current.type !== "text";
+  elements.textAnswer.maxLength = getCurrentMode().textOnly ? 280 : 180;
+  elements.textAnswer.placeholder = getCurrentMode().textOnly
+    ? "Skriv 1-2 meningar och förklara med egna ord."
+    : "Skriv ett kort svar. Ett eller några ord räcker ofta.";
   elements.submitTextButton.disabled = false;
   elements.feedbackBox.className = "feedback-box";
   elements.feedbackBox.innerHTML = `
