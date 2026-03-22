@@ -117,6 +117,42 @@
     "explanation": "Texten säger att en muslim inte dricker alkohol."
   },
   {
+    "id": "allah-name-text",
+    "difficulty": "easy",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Gud",
+    "question": "Vad heter Gud inom islam enligt texten?",
+    "correctAnswer": "Allah",
+    "acceptedAnswers": ["allah"],
+    "sourceExcerpt": "Muslimerna tror bara på en gud, Allah.",
+    "explanation": "I texten står att Gud heter Allah."
+  },
+  {
+    "id": "meaning-muslim-text",
+    "difficulty": "easy",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Grundfakta",
+    "question": "Vad betyder ordet muslim?",
+    "correctAnswer": "En som underkastar sig",
+    "acceptedAnswers": ["en som underkastar sig", "underkastar sig"],
+    "sourceExcerpt": "Muslim betyder 'en som underkastar sig'.",
+    "explanation": "Texten förklarar att muslim betyder en som underkastar sig."
+  },
+  {
+    "id": "prophet-text",
+    "difficulty": "easy",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Gud och profeten",
+    "question": "Vad hette profeten som kallas Guds budbärare?",
+    "correctAnswer": "Muhammed",
+    "acceptedAnswers": ["muhammed"],
+    "sourceExcerpt": "Profeten Muhammed kallas Guds budbärare.",
+    "explanation": "Texten säger att Muhammed är Guds budbärare."
+  },
+  {
     "id": "born-city",
     "difficulty": "medium",
     "type": "choice",
@@ -231,6 +267,42 @@
     "acceptedAnswers": ["eid al-adha", "eid al adha"],
     "sourceExcerpt": "Eid al-adha är en offerhögtid som firas dagen efter att vallfärden till Mekka har avslutats.",
     "explanation": "Offerhögtiden efter vallfärden heter eid al-adha."
+  },
+  {
+    "id": "prayer-direction-text",
+    "difficulty": "medium",
+    "type": "text",
+    "modes": ["final"],
+    "category": "De fem pelarna",
+    "question": "Vilken stad ska man vara vänd mot när man ber?",
+    "correctAnswer": "Mekka",
+    "acceptedAnswers": ["mekka"],
+    "sourceExcerpt": "När man ber ska man vara vänd mot Mekka.",
+    "explanation": "Texten säger att man ska vara vänd mot Mekka."
+  },
+  {
+    "id": "eid-fitr-text",
+    "difficulty": "medium",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Högtider",
+    "question": "Vilken högtid firas när Ramadan är slut?",
+    "correctAnswer": "Eid al-fitr",
+    "acceptedAnswers": ["eid al-fitr", "eid al fitr"],
+    "sourceExcerpt": "Eid al-fitr firas när fastemånaden Ramadan är slut.",
+    "explanation": "Eid al-fitr kommer när Ramadan är slut."
+  },
+  {
+    "id": "imam-text",
+    "difficulty": "medium",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Moské",
+    "question": "Vad kallas en muslimsk präst enligt texten?",
+    "correctAnswer": "Imam",
+    "acceptedAnswers": ["imam"],
+    "sourceExcerpt": "En muslimsk 'präst' kallas imam.",
+    "explanation": "Texten säger att en muslimsk präst kallas imam."
   },
   {
     "id": "second-largest",
@@ -348,5 +420,41 @@
     "acceptedAnswers": ["återvänder till gud", "till gud", "den döde återvänder till gud"],
     "sourceExcerpt": "För en muslim är döden inte slutet. Den döde återvänder till Gud.",
     "explanation": "Texten säger att den döde återvänder till Gud."
+  },
+  {
+    "id": "arabic-language-text",
+    "difficulty": "hard",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Helig skrift",
+    "question": "Vilket språk är Koranen skriven på?",
+    "correctAnswer": "Arabiska",
+    "acceptedAnswers": ["arabiska"],
+    "sourceExcerpt": "Koranen är skriven på arabiska.",
+    "explanation": "Texten säger att Koranen är skriven på arabiska."
+  },
+  {
+    "id": "friday-prayer-text",
+    "difficulty": "hard",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Moské",
+    "question": "Vilken bön är viktigast under veckan enligt texten?",
+    "correctAnswer": "Fredagens middagsbön",
+    "acceptedAnswers": ["fredagens middagsbön", "fredagsbönen"],
+    "sourceExcerpt": "Den viktigaste bönen under veckan är fredagens middagsbön.",
+    "explanation": "Texten säger att fredagens middagsbön är viktigast."
+  },
+  {
+    "id": "second-largest-text",
+    "difficulty": "hard",
+    "type": "text",
+    "modes": ["final"],
+    "category": "Grundfakta",
+    "question": "Vilken plats har islam bland världens religioner enligt texten?",
+    "correctAnswer": "Den näst största religionen",
+    "acceptedAnswers": ["den näst största religionen", "näst största", "den näst största"],
+    "sourceExcerpt": "I Sverige och i världen är islam den näst största religionen.",
+    "explanation": "Texten säger att islam är den näst största religionen."
   }
 ]

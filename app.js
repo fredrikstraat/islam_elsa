@@ -1,3 +1,22 @@
+const gameModes = {
+  standard: {
+    id: "standard",
+    name: "Obby Mix",
+    tag: "Obby Mix",
+    hint: "Blanda flervalsfrågor och textsvar i en vanlig omgång.",
+    runPlan: { easy: 6, medium: 6, hard: 6 },
+    textOnly: false
+  },
+  final: {
+    id: "final",
+    name: "Creator Tower: Endbossbanan",
+    tag: "Finalväg",
+    hint: "Sista vägen med bara textsvar som rättas av OpenAI. Här gäller det att kunna allt själv.",
+    runPlan: { easy: 5, medium: 5, hard: 5 },
+    textOnly: true
+  }
+};
+
 const badgeConfig = [
   { id: "spawn", icon: "S", name: "Spawn Boost", description: "Få ditt första rätta svar." },
   { id: "combo", icon: "C", name: "Combo Cube", description: "Få 3 rätta i rad." },
@@ -29,11 +48,6 @@ const questConfig = [
 ];
 
 const xpGoal = 60;
-const runPlan = {
-  easy: 6,
-  medium: 6,
-  hard: 6
-};
 
 const difficultyConfig = {
   easy: {
@@ -69,6 +83,10 @@ const elements = {
   playerName: document.querySelector("#playerName"),
   saveNameButton: document.querySelector("#saveNameButton"),
   welcomeText: document.querySelector("#welcomeText"),
+  standardModeButton: document.querySelector("#standardModeButton"),
+  finalModeButton: document.querySelector("#finalModeButton"),
+  modeNameTag: document.querySelector("#modeNameTag"),
+  modeHint: document.querySelector("#modeHint"),
   aiStatusValue: document.querySelector("#aiStatusValue"),
   aiStatusHint: document.querySelector("#aiStatusHint"),
   aiStatusPill: document.querySelector("#aiStatusPill"),
@@ -106,6 +124,7 @@ const elements = {
 
 let questions = [];
 let state = {};
+let currentMode = "standard";
 
 function escapeHtml(value) {
   return String(value)
@@ -133,25 +152,36 @@ function getDifficultyInfo(difficulty) {
   return difficultyConfig[normalizeDifficulty(difficulty)];
 }
 
-function buildQuestionRun(allQuestions) {
+function getCurrentMode() {
+  return gameModes[currentMode] || gameModes.standard;
+}
+
+function getModePool(allQuestions, mode) {
+  if (mode.textOnly) {
+    return allQuestions.filter((question) => question.type === "text" && (!question.modes || question.modes.includes("final")));
+  }
+  return allQuestions.filter((question) => !question.modes || question.modes.includes("standard"));
+}
+
+function buildQuestionRun(allQuestions, mode) {
   const grouped = {
     easy: [],
     medium: [],
     hard: []
   };
 
-  allQuestions.forEach((question) => {
+  getModePool(allQuestions, mode).forEach((question) => {
     grouped[normalizeDifficulty(question.difficulty)].push(question);
   });
 
   const ordered = [];
   for (const difficulty of ["easy", "medium", "hard"]) {
-    ordered.push(...shuffle(grouped[difficulty]).slice(0, runPlan[difficulty]));
+    ordered.push(...shuffle(grouped[difficulty]).slice(0, mode.runPlan[difficulty]));
   }
 
   const selectedIds = new Set(ordered.map((question) => question.id));
-  const leftovers = shuffle(allQuestions.filter((question) => !selectedIds.has(question.id)));
-  const targetCount = Object.values(runPlan).reduce((sum, count) => sum + count, 0);
+  const leftovers = shuffle(getModePool(allQuestions, mode).filter((question) => !selectedIds.has(question.id)));
+  const targetCount = Object.values(mode.runPlan).reduce((sum, count) => sum + count, 0);
 
   while (ordered.length < targetCount && leftovers.length > 0) {
     ordered.push(leftovers.pop());
@@ -207,6 +237,14 @@ function getProgressXp() {
   return state.xp % xpGoal;
 }
 
+function renderModeSelector() {
+  const mode = getCurrentMode();
+  elements.modeNameTag.textContent = mode.tag;
+  elements.modeHint.textContent = mode.hint;
+  elements.standardModeButton.classList.toggle("active", currentMode === "standard");
+  elements.finalModeButton.classList.toggle("active", currentMode === "final");
+}
+
 function savePlayerName() {
   const safeName = elements.playerName.value.trim() || "Roblox-stjärna";
   elements.playerName.value = safeName;
@@ -231,6 +269,26 @@ function loadPlayerName() {
   }
 }
 
+function loadPreferredMode() {
+  try {
+    const saved = localStorage.getItem("religion-quiz-mode");
+    if (saved && gameModes[saved]) {
+      currentMode = saved;
+    }
+  } catch (error) {
+    currentMode = "standard";
+  }
+  renderModeSelector();
+}
+
+function savePreferredMode() {
+  try {
+    localStorage.setItem("religion-quiz-mode", currentMode);
+  } catch (error) {
+    // Ignore storage failures.
+  }
+}
+
 async function loadQuestions() {
   const response = await fetch("./questions.json", { cache: "no-store" });
   if (!response.ok) {
@@ -238,7 +296,7 @@ async function loadQuestions() {
   }
 
   const loaded = await response.json();
-  return buildQuestionRun(loaded);
+  return buildQuestionRun(loaded, getCurrentMode());
 }
 
 async function refreshAiStatus() {
@@ -391,7 +449,7 @@ function renderQuestion() {
   elements.difficultyPill.textContent = difficultyInfo.label;
   elements.difficultyPill.className = `difficulty-pill ${difficultyInfo.className}`;
   elements.questionText.textContent = current.question;
-  elements.answerModePill.textContent = current.type === "text" ? "Textfråga" : "Flervalsfråga";
+  elements.answerModePill.textContent = getCurrentMode().textOnly ? "Finalväg: textsvar" : current.type === "text" ? "Textfråga" : "Flervalsfråga";
   elements.nextButton.disabled = true;
   elements.choices.innerHTML = "";
   elements.textAnswer.value = "";
@@ -648,12 +706,13 @@ function rankPlayer() {
 
 function showResults() {
   const notPerfect = state.answers.filter((answer) => answer.verdict !== "correct");
+  const mode = getCurrentMode();
 
   elements.categoryPill.textContent = "Målgång";
   elements.questionCount.textContent = `Klar! ${state.score} / ${questions.length}`;
-  elements.difficultyPill.textContent = "Mix";
-  elements.difficultyPill.className = "difficulty-pill medium";
-  elements.answerModePill.textContent = "Run clear";
+  elements.difficultyPill.textContent = mode.textOnly ? "Final" : "Mix";
+  elements.difficultyPill.className = `difficulty-pill ${mode.textOnly ? "hard" : "medium"}`;
+  elements.answerModePill.textContent = mode.name;
   elements.questionText.textContent = `${elements.playerName.value || "Spelare"}, din run är klar.`;
   elements.choices.innerHTML = "";
   elements.textAnswerPanel.hidden = true;
@@ -662,7 +721,7 @@ function showResults() {
   elements.nextButton.disabled = true;
 
   elements.resultTitle.textContent = rankPlayer();
-  elements.resultSummary.textContent = `Du fick ${state.score} helt rätta svar av ${questions.length}, nådde nivå ${getLevel()}, klarade ${state.hardWins} svåra frågor och hade som bäst en streak på ${state.bestStreak}. ${
+  elements.resultSummary.textContent = `Du klarade ${mode.name} och fick ${state.score} helt rätta svar av ${questions.length}, nådde nivå ${getLevel()}, klarade ${state.hardWins} svåra frågor och hade som bäst en streak på ${state.bestStreak}. ${
     notPerfect.length === 0 ? "Perfekt run utan fel." : "Här kommer en snabb repetition av svar att kika extra på."
   }`;
 
@@ -706,6 +765,7 @@ function goToNextQuestion() {
 
 async function startGame() {
   state = makeInitialState();
+  renderModeSelector();
   updateHud();
   renderQuests();
   renderBadges();
@@ -714,7 +774,7 @@ async function startGame() {
     questions = await loadQuestions();
     await refreshAiStatus();
     renderQuestion();
-    showToast("Ny AI-run startad.");
+    showToast(`${getCurrentMode().name} startad.`);
   } catch (error) {
     elements.feedbackBox.className = "feedback-box bad";
     elements.feedbackBox.innerHTML = `
@@ -724,10 +784,22 @@ async function startGame() {
   }
 }
 
+function setMode(modeId) {
+  if (!gameModes[modeId] || currentMode === modeId) {
+    return;
+  }
+  currentMode = modeId;
+  savePreferredMode();
+  renderModeSelector();
+  startGame();
+}
+
 elements.nextButton.addEventListener("click", goToNextQuestion);
 elements.restartTopButton.addEventListener("click", startGame);
 elements.playAgainButton.addEventListener("click", startGame);
 elements.saveNameButton.addEventListener("click", savePlayerName);
+elements.standardModeButton.addEventListener("click", () => setMode("standard"));
+elements.finalModeButton.addEventListener("click", () => setMode("final"));
 elements.submitTextButton.addEventListener("click", () => gradeAnswer(elements.textAnswer.value));
 elements.textAnswer.addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
@@ -741,4 +813,5 @@ elements.playerName.addEventListener("keydown", (event) => {
 });
 
 loadPlayerName();
+loadPreferredMode();
 startGame();
