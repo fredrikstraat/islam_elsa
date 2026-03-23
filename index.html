@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Luckiest+Guy&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Marhey:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
@@ -20,11 +20,11 @@
     <main class="app-shell">
       <header class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">AI Quest Mode</p>
+          <p class="eyebrow">Palace Quest Mode</p>
           <h1>Islam-Obbyn</h1>
           <p class="hero-text">
-            Roblox-känsla, snabba banor och en AI-domare som bedömer både flervals-
-            och textsvar utifrån faktatexten om islam.
+            Ett ökenpalats-äventyr med obby-känsla, hemliga portar och en AI-domare
+            som bedömer både flervals- och textsvar utifrån faktatexten om islam.
           </p>
           <div class="mode-panel">
             <div class="mode-heading">
@@ -41,6 +41,16 @@
             </div>
             <p id="modeHint" class="mode-hint">
               Blanda flervalsfrågor och textsvar i en vanlig omgång.
+            </p>
+          </div>
+          <div class="character-panel">
+            <div class="mode-heading">
+              <h2>Välj hjälte</h2>
+              <span class="mini-tag">Symboliska avatarer</span>
+            </div>
+            <div id="characterGrid" class="character-grid"></div>
+            <p class="mode-hint">
+              Avatarerna är stiliserade och inspirerade av viktiga personer i islams historia.
             </p>
           </div>
         </div>
@@ -141,6 +151,41 @@
           </div>
 
           <h2 id="questionText" class="question-text"></h2>
+
+          <section class="obby-panel">
+            <div class="panel-heading">
+              <h2 id="stageTitle">Dörrbanan</h2>
+              <span id="stageInstruction" class="mini-tag">Välj rätt dörr</span>
+            </div>
+            <div class="world-strip">
+              <div class="world-card">
+                <span class="hud-label">Värld</span>
+                <strong id="worldName">Spawn Square</strong>
+              </div>
+              <div class="world-card">
+                <span class="hud-label">Uppdrag</span>
+                <span id="characterMission">Välj hjälte och spring mot rätt port.</span>
+              </div>
+            </div>
+            <div id="obbyScene" class="obby-scene">
+              <div class="scene-sun"></div>
+              <div class="scene-cloud cloud-a"></div>
+              <div class="scene-cloud cloud-b"></div>
+              <div id="platformLayer" class="platform-layer"></div>
+              <div id="doorTrack" class="door-track"></div>
+              <div id="playerAvatar" class="player-avatar">
+                <div id="playerAvatarFace" class="player-avatar-face">A</div>
+                <div id="playerAvatarName" class="player-avatar-name">Aisha</div>
+              </div>
+              <div class="scene-ground"></div>
+            </div>
+            <div class="control-pad">
+              <button id="moveLeftButton" class="control-button" type="button">←</button>
+              <button id="jumpButton" class="control-button jump" type="button">Hoppa</button>
+              <button id="moveRightButton" class="control-button" type="button">→</button>
+              <button id="openDoorButton" class="control-button open" type="button">Öppna dörr</button>
+            </div>
+          </section>
 
           <div id="choices" class="choices" role="list"></div>
 
