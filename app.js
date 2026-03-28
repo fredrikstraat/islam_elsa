@@ -1,17 +1,26 @@
 const gameModes = {
   standard: {
     id: "standard",
-    name: "Obby Mix",
-    tag: "Obby Mix",
-    hint: "Spring genom dörrbanan och välj rätt port med din hjälte.",
+    name: "Likhetsjakten",
+    tag: "Jämförelsebana",
+    hint: "Spring genom portarna och hitta vad religionerna delar eller skiljer åt.",
     runPlan: { easy: 6, medium: 6, hard: 6 },
     textOnly: false
   },
+  coach: {
+    id: "coach",
+    name: "AI-coachen",
+    tag: "Lugn frågestund",
+    hint: "En fråga i taget i ett textfält, med tydlig AI-feedback direkt efter svaret.",
+    runPlan: { easy: 4, medium: 4, hard: 3 },
+    textOnly: true,
+    simpleChat: true
+  },
   final: {
     id: "final",
-    name: "Creator Tower: Endbossbanan",
+    name: "Finalportalen: Tre religioner",
     tag: "Finalväg",
-    hint: "Sista tornet med bara textsvar. Här räcker det inte med att gissa.",
+    hint: "Här räcker det inte att gissa. Du behöver jämföra med egna ord.",
     runPlan: { easy: 5, medium: 5, hard: 5 },
     textOnly: true
   }
@@ -19,65 +28,65 @@ const gameModes = {
 
 const characterConfig = [
   {
-    id: "khadija",
-    name: "Khadija",
-    title: "Karavanmästaren",
-    icon: "K",
+    id: "skriftspanaren",
+    name: "Skriftspanaren",
+    title: "Bokletaren",
+    icon: "S",
     accent: "#ff8f1f",
-    description: "Lugn, klok och snabb på att hitta rätt väg."
+    description: "Håller koll på Tanakh, Bibeln och Koranen."
   },
   {
-    id: "aisha",
-    name: "Aisha",
-    title: "Kunskapssamlaren",
-    icon: "A",
+    id: "likhetsjagaren",
+    name: "Likhetsjägaren",
+    title: "Brobyggaren",
+    icon: "L",
     accent: "#14c3c6",
-    description: "Läser ledtrådar noga och gillar kluriga svar."
+    description: "Ser snabbt vad religionerna har gemensamt."
   },
   {
-    id: "bilal",
-    name: "Bilal",
-    title: "Minaretscouten",
-    icon: "B",
+    id: "symbolscouten",
+    name: "Symbolscouten",
+    title: "Spårtolkaren",
+    icon: "Y",
     accent: "#59d98e",
-    description: "Rör sig snabbt mellan dörrar och håller fokus."
+    description: "Fångar skillnader mellan symboler, högtider och ritualer."
   },
   {
-    id: "fatima",
-    name: "Fatima",
-    title: "Stjärnväktaren",
+    id: "finalvaktaren",
+    name: "Finalväktaren",
+    title: "Jämförelsemästaren",
     icon: "F",
     accent: "#ff5da8",
-    description: "Modig på bossbanor och stark i finalen."
+    description: "Trivs när svaren behöver vara bredare och smartare."
   }
 ];
 
 const badgeConfig = [
-  { id: "spawn", icon: "S", name: "Spawn Boost", description: "Få ditt första rätta svar." },
-  { id: "combo", icon: "C", name: "Combo Cube", description: "Få 3 rätta i rad." },
-  { id: "creator", icon: "T", name: "Text Titan", description: "Klara 3 textfrågor rätt." },
-  { id: "boss", icon: "B", name: "Boss Rush", description: "Klara 2 svåra frågor rätt." },
-  { id: "eid", icon: "E", name: "Eid Expert", description: "Klara båda eid-frågorna." },
-  { id: "perfect", icon: "P", name: "Perfect Run", description: "Gå igenom hela banan utan fel." }
+  { id: "spawn", icon: "S", name: "Startgnista", description: "Få ditt första helt rätta svar." },
+  { id: "combo", icon: "C", name: "Jämförelsecombo", description: "Få 3 rätta i rad." },
+  { id: "creator", icon: "T", name: "Textspjutet", description: "Klara 3 textfrågor rätt." },
+  { id: "boss", icon: "B", name: "Skillnadsspåraren", description: "Klara 2 svåra frågor rätt." },
+  { id: "eid", icon: "G", name: "Gemensam Blick", description: "Klara alla frågor i kategorin Gemensamt rätt." },
+  { id: "perfect", icon: "P", name: "Perfekt Runda", description: "Gå igenom hela banan utan fel." }
 ];
 
 const questConfig = [
   {
     id: "three-streak",
     icon: "1",
-    title: "Combo-uppdrag",
+    title: "Jämförelsecombo",
     description: "Få 3 rätta svar i rad."
   },
   {
     id: "text-pro",
     icon: "2",
-    title: "Creator Mode",
+    title: "Textkraft",
     description: "Klara 3 textfrågor rätt."
   },
   {
     id: "hard-mode",
     icon: "3",
-    title: "Boss mode",
+    title: "Slutspurt",
     description: "Klara 2 svåra frågor rätt."
   }
 ];
@@ -109,101 +118,101 @@ const difficultyConfig = {
 };
 
 const worldThemes = {
-  "Grundfakta": {
-    name: "Ökenporten",
-    choiceInstruction: "Vandra genom portarna i startoasen",
-    textInstruction: "Berätta med egna ord för att lämna den första gården",
-    mission: "Samla grundfakta och lås upp nästa gård i palatset.",
+  Gemensamt: {
+    name: "Rotporten",
+    choiceInstruction: "Hitta det som binder religionerna samman",
+    textInstruction: "Beskriv likheten tydligt för att öppna nästa port",
+    mission: "Samla gemensamma drag och bygg en stabil grund för jämförelsen.",
     skyTop: "#f2b56b",
     skyBottom: "#fde8be",
     groundTop: "#c98a47",
     groundBottom: "#8a5524"
   },
-  Gud: {
-    name: "Tawhidterrassen",
-    choiceInstruction: "Välj porten som stämmer med tron på Gud",
-    textInstruction: "Förklara tydligt vad texten säger om Gud",
-    mission: "Visa att du har koll på vem muslimer tror på.",
+  "Symboler och personer": {
+    name: "Symboltorget",
+    choiceInstruction: "Leta efter rätt symbol, person eller helig plats",
+    textInstruction: "Jämför personerna eller symbolerna med egna ord",
+    mission: "Håll isär Jesus, Messias, Davidsstjärnan, korset och andra nyckelspår.",
     skyTop: "#35608f",
     skyBottom: "#9dc6dd",
     groundTop: "#1d7f87",
     groundBottom: "#114e57"
   },
-  "Gud och profeten": {
-    name: "Budbärargången",
-    choiceInstruction: "Passera rätt port i sandstensgången",
-    textInstruction: "Svara lugnt och klart för att passera budbärarporten",
-    mission: "Lås upp rätt väg genom att minnas vem Muhammed var.",
-    skyTop: "#7c4f4b",
-    skyBottom: "#f1c39a",
-    groundTop: "#d98c54",
-    groundBottom: "#8c4c22"
-  },
-  "Helig skrift": {
-    name: "Skriftens Gård",
-    choiceInstruction: "Spring till den port som passar texten bäst",
-    textInstruction: "Skriv 1-2 meningar om det du minns från skriften",
-    mission: "Samla kunskap från den heliga skriften för att gå vidare.",
+  "Heliga skrifter": {
+    name: "Skriftarkivet",
+    choiceInstruction: "Spring till porten med rätt bok eller rätt jämförelse",
+    textInstruction: "Skriv vad som skiljer eller förenar skrifterna",
+    mission: "Klara skillnaderna mellan Tanakh, Bibeln och Koranen.",
     skyTop: "#4e4c8c",
     skyBottom: "#d9c2f2",
     groundTop: "#7d68c8",
     groundBottom: "#46338b"
   },
-  Moské: {
-    name: "Minaretgränden",
-    choiceInstruction: "Navigera mellan valv och mosképortar",
-    textInstruction: "Beskriv vad som händer i moskén för att öppna portalen",
-    mission: "Hitta rätt väg i minaretkvarteren.",
+  "Heliga byggnader": {
+    name: "Bönens Gård",
+    choiceInstruction: "Välj rätt byggnad eller rätt ledare för att komma vidare",
+    textInstruction: "Förklara hur byggnaderna används i religionerna",
+    mission: "Håll ordning på synagoga, kyrka och moské.",
     skyTop: "#578a93",
     skyBottom: "#d7efe2",
     groundTop: "#3da087",
     groundBottom: "#1c5f54"
   },
-  Maten: {
-    name: "Kryddbasaren",
-    choiceInstruction: "Ta rätt matport genom basaren",
-    textInstruction: "Beskriv regeln tydligt för att komma vidare",
-    mission: "Klara matbanan med rätt fakta i bagaget.",
+  "Högtider och veckorytm": {
+    name: "Festkalendern",
+    choiceInstruction: "Spring mellan veckodagar och högtidsportar",
+    textInstruction: "Jämför firanden och vilodagar för att låsa upp nästa valv",
+    mission: "Samla sabbat, söndag, fredag, påsk, pesach och eid i rätt mönster.",
     skyTop: "#d8904a",
     skyBottom: "#f8dfb7",
     groundTop: "#c66a36",
     groundBottom: "#8f3f1f"
   },
-  "De fem pelarna": {
-    name: "Pelarpalatset",
-    choiceInstruction: "Hoppa mellan pelarportarna och välj rätt",
-    textInstruction: "Förklara en pelare i egna ord för att låsa upp nästa sal",
-    mission: "Visa att du kan islams fem pelare steg för steg.",
+  "Regler och vardag": {
+    name: "Vardagsvalven",
+    choiceInstruction: "Ta rätt port bland matregler, böner och vardagsval",
+    textInstruction: "Jämför reglerna tydligt för att passera",
+    mission: "Se vad som är strängt, vad som är friare och vad som är gemensamt.",
     skyTop: "#2f4e83",
     skyBottom: "#f1d59b",
     groundTop: "#6c74bf",
     groundBottom: "#2d376d"
   },
-  Högtider: {
-    name: "Eidmarknaden",
-    choiceInstruction: "Hitta högtidsporten som leder vidare",
-    textInstruction: "Berätta vad högtiden handlar om för att passera",
-    mission: "Fira dig vidare genom rätt högtidskunskap.",
+  Livsriter: {
+    name: "Livsportalen",
+    choiceInstruction: "Navigera mellan dop, mitzva och andra livsritsportar",
+    textInstruction: "Förklara ritualerna med egna ord",
+    mission: "Träna på hur religionerna markerar viktiga steg i livet.",
     skyTop: "#8f4564",
     skyBottom: "#f5d6b7",
     groundTop: "#d96f8b",
     groundBottom: "#8f3557"
   },
   "Livet efter döden": {
-    name: "Domens Port",
-    choiceInstruction: "Välj sista porten med rätt kunskap",
-    textInstruction: "Formulera ett tydligt svar för att klara slutportalen",
-    mission: "Det här är slutet av runnen, så tänk igenom svaret noga.",
+    name: "Stjärnvalvet",
+    choiceInstruction: "Välj porten som bäst fångar det som händer efter döden",
+    textInstruction: "Formulera ett tydligt jämförelsesvar för att klara portalen",
+    mission: "Här gäller det att hålla isär själ, dom och paradis utan att blanda ihop dem.",
     skyTop: "#1e2958",
     skyBottom: "#d8b77d",
     groundTop: "#6657b0",
     groundBottom: "#2b2358"
   },
+  Utbredning: {
+    name: "Världskartan",
+    choiceInstruction: "Spring mellan portarna som visar storlek och spridning",
+    textInstruction: "Jämför hur religionerna är spridda i världen",
+    mission: "Samla storlek, länder och grupper utan att tappa överblicken.",
+    skyTop: "#2f5f73",
+    skyBottom: "#d5e6f0",
+    groundTop: "#4b88a8",
+    groundBottom: "#27526a"
+  },
   default: {
-    name: "Palatsbanan",
-    choiceInstruction: "Välj rätt port för att fortsätta",
-    textInstruction: "Svara med egna ord för att öppna portalen",
-    mission: "Spring vidare genom kunskapspalatset.",
+    name: "Jämförelsebanan",
+    choiceInstruction: "Välj rätt port för att fortsätta jämförelsen",
+    textInstruction: "Svara med egna ord för att öppna nästa portal",
+    mission: "Spring vidare genom kunskapsvärlden och jämför smart.",
     skyTop: "#d59758",
     skyBottom: "#f6dfb2",
     groundTop: "#ba7e43",
@@ -234,6 +243,7 @@ const elements = {
   saveNameButton: document.querySelector("#saveNameButton"),
   welcomeText: document.querySelector("#welcomeText"),
   standardModeButton: document.querySelector("#standardModeButton"),
+  coachModeButton: document.querySelector("#coachModeButton"),
   finalModeButton: document.querySelector("#finalModeButton"),
   modeNameTag: document.querySelector("#modeNameTag"),
   modeHint: document.querySelector("#modeHint"),
@@ -248,7 +258,9 @@ const elements = {
   streakValue: document.querySelector("#streakValue"),
   gemsValue: document.querySelector("#gemsValue"),
   textWinsValue: document.querySelector("#textWinsValue"),
+  sidePanelToggle: document.querySelector("#sidePanelToggle"),
   questList: document.querySelector("#questList"),
+  sideColumn: document.querySelector("#sideColumn"),
   progressText: document.querySelector("#progressText"),
   milestoneTrack: document.querySelector("#milestoneTrack"),
   badgeTray: document.querySelector("#badgeTray"),
@@ -261,6 +273,9 @@ const elements = {
   stageInstruction: document.querySelector("#stageInstruction"),
   worldName: document.querySelector("#worldName"),
   characterMission: document.querySelector("#characterMission"),
+  obbyPanel: document.querySelector("#obbyPanel"),
+  coachPanel: document.querySelector("#coachPanel"),
+  coachPrompt: document.querySelector("#coachPrompt"),
   obbyScene: document.querySelector("#obbyScene"),
   platformLayer: document.querySelector("#platformLayer"),
   doorTrack: document.querySelector("#doorTrack"),
@@ -271,9 +286,12 @@ const elements = {
   moveRightButton: document.querySelector("#moveRightButton"),
   jumpButton: document.querySelector("#jumpButton"),
   openDoorButton: document.querySelector("#openDoorButton"),
+  controlHint: document.querySelector("#controlHint"),
   choices: document.querySelector("#choices"),
   textAnswerPanel: document.querySelector("#textAnswerPanel"),
+  textAnswerLabel: document.querySelector("#textAnswerLabel"),
   textAnswer: document.querySelector("#textAnswer"),
+  textHelp: document.querySelector("#textHelp"),
   submitTextButton: document.querySelector("#submitTextButton"),
   feedbackBox: document.querySelector("#feedbackBox"),
   nextButton: document.querySelector("#nextButton"),
@@ -290,8 +308,15 @@ const elements = {
 let questions = [];
 let state = {};
 let currentMode = "standard";
-let selectedCharacterId = "aisha";
+let selectedCharacterId = "likhetsjagaren";
 let worldLoopId = 0;
+let sidePanelOpen = false;
+const isTouchDevice =
+  (typeof window !== "undefined" && window.matchMedia?.("(hover: none) and (pointer: coarse)")?.matches) ||
+  (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0);
+const compactLayoutQuery =
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(max-width: 1100px)") : null;
+let lastCompactLayout = compactLayoutQuery?.matches ?? false;
 
 function escapeHtml(value) {
   return String(value)
@@ -321,6 +346,10 @@ function getDifficultyInfo(difficulty) {
 
 function getCurrentMode() {
   return gameModes[currentMode] || gameModes.standard;
+}
+
+function isCoachMode() {
+  return Boolean(getCurrentMode().simpleChat);
 }
 
 function getSelectedCharacter() {
@@ -360,7 +389,7 @@ function updateAvatarVisual() {
 }
 
 function savePlayerName() {
-  const safeName = elements.playerName.value.trim() || "Roblox-stjärna";
+  const safeName = elements.playerName.value.trim() || "Quizhjälte";
   elements.playerName.value = safeName;
   try {
     localStorage.setItem("religion-quiz-player-name", safeName);
@@ -410,7 +439,7 @@ function loadPreferredCharacter() {
       selectedCharacterId = saved;
     }
   } catch (error) {
-    selectedCharacterId = "aisha";
+    selectedCharacterId = "likhetsjagaren";
   }
   renderCharacterGrid();
   updateAvatarVisual();
@@ -433,7 +462,7 @@ function setCharacter(characterId) {
   renderCharacterGrid();
   updateAvatarVisual();
   updateWorldStrip(questions[state.currentIndex]);
-  showToast(`${getSelectedCharacter().name} är redo för obbyn!`);
+  showToast(`${getSelectedCharacter().name} är redo för jämförelsebanan!`);
 }
 
 function renderModeSelector() {
@@ -441,6 +470,7 @@ function renderModeSelector() {
   elements.modeNameTag.textContent = mode.tag;
   elements.modeHint.textContent = mode.hint;
   elements.standardModeButton.classList.toggle("active", currentMode === "standard");
+  elements.coachModeButton.classList.toggle("active", currentMode === "coach");
   elements.finalModeButton.classList.toggle("active", currentMode === "final");
 }
 
@@ -456,6 +486,9 @@ function updateWorldStrip(question) {
 }
 
 function getModePool(allQuestions, mode) {
+  if (mode.simpleChat) {
+    return allQuestions.filter((question) => question.type === "text");
+  }
   if (mode.textOnly) {
     return allQuestions.filter((question) => question.type === "text" && Array.isArray(question.modes) && question.modes.includes("final"));
   }
@@ -520,7 +553,8 @@ function makeWorldState() {
     },
     input: {
       left: false,
-      right: false
+      right: false,
+      targetX: null
     },
     platforms: [],
     doors: []
@@ -617,6 +651,57 @@ function renderAiStatus() {
   elements.aiStatusPill.className = "status-pill offline";
 }
 
+function updateControlHint(question) {
+  if (!elements.controlHint) {
+    return;
+  }
+
+  if (isCoachMode()) {
+    elements.controlHint.textContent = "Coachläge: läs frågan, skriv ditt svar och få AI-feedback direkt.";
+    return;
+  }
+
+  if (question?.type === "text") {
+    elements.controlHint.textContent = isTouchDevice
+      ? "iPad-läge: tryck i världen för att gå till portalen och skriv sedan svaret i rutan."
+      : "Tips: gå fram till portalen först och skriv sedan svaret i rutan.";
+    return;
+  }
+
+  elements.controlHint.textContent = isTouchDevice
+    ? "iPad-läge: tryck i världen för att gå dit, eller håll inne vänster och höger för finstyrning."
+    : "Tips: styr med pilarna eller tangentbordet och öppna sedan rätt dörr.";
+}
+
+function setSidePanelOpen(open) {
+  if (!elements.sideColumn || !elements.sidePanelToggle) {
+    return;
+  }
+
+  sidePanelOpen = open;
+  elements.sideColumn.classList.toggle("open", open);
+  elements.sidePanelToggle.setAttribute("aria-expanded", String(open));
+  elements.sidePanelToggle.textContent = open
+    ? "Dölj uppdrag, banstig och badges"
+    : "Visa uppdrag, banstig och badges";
+}
+
+function syncSidePanelLayout() {
+  const compact = compactLayoutQuery?.matches ?? false;
+  if (compact === lastCompactLayout) {
+    setSidePanelOpen(compact ? sidePanelOpen : true);
+    return;
+  }
+
+  lastCompactLayout = compact;
+  if (!compact) {
+    setSidePanelOpen(true);
+    return;
+  }
+
+  setSidePanelOpen(false);
+}
+
 function updateHud() {
   elements.levelValue.textContent = String(getLevel());
   elements.scoreValue.textContent = String(state.score);
@@ -647,14 +732,10 @@ function renderMilestones() {
 }
 
 function questStatuses() {
-  const eidQuestions = questions.filter((question) => question.category === "Högtider");
-  const eidDone = eidQuestions.length > 0 && eidQuestions.every((question) => state.questionResults[question.id] === true);
-
   return {
     "three-streak": state.bestStreak >= 3,
     "text-pro": state.textWins >= 3,
-    "hard-mode": state.hardWins >= 2,
-    "eid-pair": eidDone
+    "hard-mode": state.hardWins >= 2
   };
 }
 
@@ -714,6 +795,7 @@ function stopWorldLoop() {
     state.world.active = false;
     state.world.input.left = false;
     state.world.input.right = false;
+    state.world.input.targetX = null;
   }
 }
 
@@ -727,6 +809,16 @@ function getSupportHeight(x) {
     }
   }
   return support;
+}
+
+function setSceneTargetFromClientX(clientX) {
+  if (!state.world?.active) {
+    return;
+  }
+
+  const rect = elements.obbyScene.getBoundingClientRect();
+  const relativeX = ((clientX - rect.left) / rect.width) * state.world.width;
+  state.world.input.targetX = Math.min(state.world.width - 46, Math.max(46, relativeX));
 }
 
 function buildChoiceLayout(question) {
@@ -829,7 +921,10 @@ function syncWorldVisuals() {
   });
   elements.playerAvatar.style.left = `${(world.avatar.x / world.width) * 100}%`;
   elements.playerAvatar.style.bottom = `${worldConfig.groundHeight + world.avatar.y}px`;
-  elements.playerAvatar.classList.toggle("running", world.input.left || world.input.right);
+  elements.playerAvatar.classList.toggle(
+    "running",
+    world.input.left || world.input.right || world.input.targetX !== null
+  );
 }
 
 function updateActiveDoor() {
@@ -862,7 +957,21 @@ function stepWorld(timestamp) {
 
   if (!state.grading) {
     if (world.input.left === world.input.right) {
-      world.avatar.facing = world.avatar.facing || 1;
+      if (world.input.targetX !== null) {
+        const dx = world.input.targetX - world.avatar.x;
+        if (Math.abs(dx) <= worldConfig.moveSpeed * delta * 1.2) {
+          world.avatar.x = world.input.targetX;
+          world.input.targetX = null;
+        } else if (dx < 0) {
+          world.avatar.x -= worldConfig.moveSpeed * delta;
+          world.avatar.facing = -1;
+        } else {
+          world.avatar.x += worldConfig.moveSpeed * delta;
+          world.avatar.facing = 1;
+        }
+      } else {
+        world.avatar.facing = world.avatar.facing || 1;
+      }
     } else if (world.input.left) {
       world.avatar.x -= worldConfig.moveSpeed * delta;
       world.avatar.facing = -1;
@@ -923,17 +1032,30 @@ function renderDoorScene(question) {
 
   if (question.type === "choice") {
     elements.stageTitle.textContent = mode.textOnly ? "Svarsportarna" : theme.name;
-    elements.stageInstruction.textContent = `${theme.choiceInstruction}. Spring fram till en port.`;
+    elements.stageInstruction.textContent = `${theme.choiceInstruction}. ${isTouchDevice ? "Tryck i världen eller använd knapparna för att springa fram till en port." : "Spring fram till en port."}`;
     elements.openDoorButton.textContent = "Öppna port";
   } else {
-    elements.stageTitle.textContent = mode.textOnly ? "Creator Tower" : theme.name;
-    elements.stageInstruction.textContent = `${mode.textOnly ? "Spring till portalen och svara med egna ord" : theme.textInstruction}.`;
+    elements.stageTitle.textContent = mode.textOnly ? "Finalportalen" : theme.name;
+    elements.stageInstruction.textContent = `${mode.textOnly ? "Spring till portalen och svara med egna ord" : theme.textInstruction}. ${isTouchDevice ? "Tryck i världen för att gå till portalen snabbare." : ""}`.trim();
     elements.openDoorButton.textContent = "Använd portalen";
   }
 
   updateActiveDoor();
   startWorldLoop();
   setInteractionDisabled(false);
+}
+
+function renderCoachScene(question) {
+  const theme = getWorldTheme(question);
+  updateWorldStrip(question);
+  stopWorldLoop();
+  elements.obbyPanel.hidden = true;
+  elements.coachPanel.hidden = false;
+  elements.choices.hidden = true;
+  elements.choices.innerHTML = "";
+  elements.coachPrompt.textContent = question.question;
+  elements.stageTitle.textContent = `${theme.name}: AI-coachen`;
+  elements.stageInstruction.textContent = "Svara med egna ord och få tydlig feedback direkt";
 }
 
 function renderQuestion() {
@@ -944,30 +1066,55 @@ function renderQuestion() {
   }
 
   const difficultyInfo = getDifficultyInfo(current.difficulty);
+  const mode = getCurrentMode();
   elements.resultCard.hidden = true;
   elements.categoryPill.textContent = current.category;
   elements.questionCount.textContent = `Fråga ${state.currentIndex + 1} / ${questions.length}`;
   elements.difficultyPill.textContent = difficultyInfo.label;
   elements.difficultyPill.className = `difficulty-pill ${difficultyInfo.className}`;
   elements.questionText.textContent = current.question;
-  elements.answerModePill.textContent = getCurrentMode().textOnly ? "Finalväg: textsvar" : current.type === "text" ? "Textfråga" : "Dörrfråga";
+  elements.answerModePill.textContent = mode.simpleChat
+    ? "AI-coach"
+    : mode.textOnly
+      ? "Finalväg: textsvar"
+      : current.type === "text"
+        ? "Textfråga"
+        : "Dörrfråga";
+  elements.nextButton.textContent = mode.simpleChat ? "Nästa fråga" : "Nästa bana";
   elements.nextButton.disabled = true;
   elements.textAnswer.value = "";
-  elements.textAnswerPanel.hidden = current.type !== "text";
-  elements.textAnswer.maxLength = getCurrentMode().textOnly ? 280 : 180;
-  elements.textAnswer.placeholder = getCurrentMode().textOnly
-    ? "Skriv 1-2 meningar och förklara med egna ord."
-    : "Skriv ett kort svar. Ett eller några ord räcker ofta.";
+  elements.textAnswerPanel.hidden = !(mode.simpleChat || current.type === "text");
+  elements.obbyPanel.hidden = mode.simpleChat;
+  elements.coachPanel.hidden = !mode.simpleChat;
+  elements.textAnswer.maxLength = mode.textOnly ? 280 : 180;
+  elements.textAnswer.placeholder = mode.simpleChat
+    ? "Skriv ett kort men tydligt svar. 1-2 meningar räcker fint."
+    : mode.textOnly
+      ? "Skriv 1-2 meningar och förklara med egna ord."
+      : "Skriv ett kort svar. Ett eller några ord räcker ofta.";
+  elements.textAnswerLabel.textContent = mode.simpleChat ? "Ditt svar till AI-coachen" : "Skriv ditt svar";
+  elements.textHelp.textContent = mode.simpleChat
+    ? "AI-coachen rättar ditt svar och förklarar lugnt vad som var bra och vad du kan förbättra."
+    : "AI-domaren godkänner korta svar och små stavfel.";
+  elements.submitTextButton.textContent = mode.simpleChat ? "Få AI-feedback" : "Skicka till AI-domaren";
   elements.submitTextButton.disabled = false;
   elements.feedbackBox.className = "feedback-box";
   elements.feedbackBox.innerHTML = `
     <strong>${difficultyInfo.intro}</strong>
-    ${current.type === "text"
-      ? "Gå fram till portalen och svara med egna ord. AI-domaren letar efter vad du förstår."
-      : "Styr med vänster, höger och hoppa. Öppna sedan den dörr du tror är rätt."}
+    ${mode.simpleChat
+      ? "Här får du en fråga i taget. Svara i textfältet så rättar AI-coachen och ger tydlig återkoppling."
+      : current.type === "text"
+        ? "Gå fram till portalen och svara med egna ord. AI-domaren letar efter vad du förstår."
+        : "Styr med vänster, höger och hoppa. Öppna sedan den dörr du tror är rätt."}
   `;
 
-  renderDoorScene(current);
+  updateControlHint(current);
+  if (mode.simpleChat) {
+    renderCoachScene(current);
+    requestAnimationFrame(() => elements.textAnswer.focus());
+  } else {
+    renderDoorScene(current);
+  }
   updateAvatarVisual();
   setInteractionDisabled(false);
   if (!isAiReady()) {
@@ -988,25 +1135,25 @@ function awardBadge(id, text) {
 
 function evaluateBadges() {
   if (state.score >= 1) {
-    awardBadge("spawn", "Badge upplåst: Spawn Boost!");
+    awardBadge("spawn", "Badge upplåst: Startgnista!");
   }
   if (state.bestStreak >= 3) {
-    awardBadge("combo", "Badge upplåst: Combo Cube!");
+    awardBadge("combo", "Badge upplåst: Jämförelsecombo!");
   }
   if (state.textWins >= 3) {
-    awardBadge("creator", "Badge upplåst: Text Titan!");
+    awardBadge("creator", "Badge upplåst: Textspjutet!");
   }
   if (state.hardWins >= 2) {
-    awardBadge("boss", "Badge upplåst: Boss Rush!");
+    awardBadge("boss", "Badge upplåst: Skillnadsspåraren!");
   }
 
-  const eidQuestions = questions.filter((question) => question.category === "Högtider");
-  if (eidQuestions.length > 0 && eidQuestions.every((question) => state.questionResults[question.id] === true)) {
-    awardBadge("eid", "Badge upplåst: Eid Expert!");
+  const commonQuestions = questions.filter((question) => question.category === "Gemensamt");
+  if (commonQuestions.length > 0 && commonQuestions.every((question) => state.questionResults[question.id] === true)) {
+    awardBadge("eid", "Badge upplåst: Gemensam Blick!");
   }
 
   if (state.answers.length === questions.length && state.score === questions.length) {
-    awardBadge("perfect", "Badge upplåst: Perfect Run!");
+    awardBadge("perfect", "Badge upplåst: Perfekt Runda!");
   }
 }
 
@@ -1058,14 +1205,14 @@ function showToast(message) {
 function setInteractionDisabled(disabled) {
   const current = questions[state.currentIndex];
   const aiReady = isAiReady();
-  const isText = current?.type === "text";
+  const isText = current?.type === "text" || isCoachMode();
   [...elements.doorTrack.querySelectorAll(".door-card")].forEach((door) => {
     door.disabled = disabled || !aiReady;
   });
-  elements.moveLeftButton.disabled = disabled || !aiReady || !current;
-  elements.moveRightButton.disabled = disabled || !aiReady || !current;
-  elements.jumpButton.disabled = disabled || !aiReady || !current;
-  elements.openDoorButton.disabled = disabled || !aiReady;
+  elements.moveLeftButton.disabled = disabled || !aiReady || !current || isCoachMode();
+  elements.moveRightButton.disabled = disabled || !aiReady || !current || isCoachMode();
+  elements.jumpButton.disabled = disabled || !aiReady || !current || isCoachMode();
+  elements.openDoorButton.disabled = disabled || !aiReady || isCoachMode();
   elements.textAnswer.disabled = disabled || !aiReady || !isText;
   elements.submitTextButton.disabled = disabled || !aiReady || !isText;
 }
@@ -1090,6 +1237,9 @@ function setMoveInput(direction, enabled) {
   if (!state.world?.active) {
     return;
   }
+  if (enabled) {
+    state.world.input.targetX = null;
+  }
   state.world.input[direction] = enabled;
 }
 
@@ -1111,6 +1261,7 @@ function handleOpenDoor() {
   }
 
   elements.textAnswer.focus();
+  elements.textAnswer.scrollIntoView({ block: "nearest", behavior: "smooth" });
   showToast("Portalen är öppen. Skriv ditt svar nedanför.");
 }
 
@@ -1146,7 +1297,7 @@ async function gradeAnswer(rawAnswer) {
       body: JSON.stringify({
         questionId: current.id,
         answer,
-        playerName: elements.playerName.value.trim() || "Roblox-stjärna"
+        playerName: elements.playerName.value.trim() || "Quizhjälte"
       })
     });
 
@@ -1214,9 +1365,9 @@ function applyGrade(question, userAnswer, grade) {
     <strong>${escapeHtml(grade.feedback_title || "Svar bedömt")} +${rewards.xp} XP</strong>
     ${escapeHtml(grade.feedback_text || "")}
     <br />
-    <b>Rätt svar:</b> ${escapeHtml(grade.correct_answer || question.correctAnswer || "")}
+    <b>${isCoachMode() ? "Det viktiga i svaret:" : "Rätt svar:"}</b> ${escapeHtml(grade.correct_answer || question.correctAnswer || "")}
     <br />
-    <b>Nästa steg:</b> ${escapeHtml(grade.coach_tip || "Bra jobbat, fortsätt så.")}
+    <b>${isCoachMode() ? "AI-coachen tipsar:" : "Nästa steg:"}</b> ${escapeHtml(grade.coach_tip || "Bra jobbat, fortsätt så.")}
   `;
 
   if (verdict === "correct") {
@@ -1232,13 +1383,13 @@ function applyGrade(question, userAnswer, grade) {
 function rankPlayer() {
   const ratio = questions.length === 0 ? 0 : state.score / questions.length;
   if (ratio === 1) {
-    return "Mekka Master";
+    return "Jämförelselegend";
   }
   if (ratio >= 0.8) {
-    return "Koran Keeper";
+    return "Trevägsmästare";
   }
   if (ratio >= 0.6) {
-    return "Moskémästare";
+    return "Likhetsspanare";
   }
   return "Faktautforskare";
 }
@@ -1251,20 +1402,26 @@ function showResults() {
 
   elements.categoryPill.textContent = "Målgång";
   elements.questionCount.textContent = `Klar! ${state.score} / ${questions.length}`;
-  elements.difficultyPill.textContent = mode.textOnly ? "Final" : "Mix";
+  elements.difficultyPill.textContent = mode.textOnly ? "Final" : "Jakt";
   elements.difficultyPill.className = `difficulty-pill ${mode.textOnly ? "hard" : "medium"}`;
   elements.answerModePill.textContent = mode.name;
   elements.questionText.textContent = `${elements.playerName.value || "Spelare"}, ${character.name} klarade runnen!`;
-  elements.stageTitle.textContent = "Segerportalen";
-  elements.stageInstruction.textContent = "Du klarade banan";
+  elements.stageTitle.textContent = mode.simpleChat ? "Coachsammanfattning" : "Segerportalen";
+  elements.stageInstruction.textContent = mode.simpleChat ? "Du klarade frågestunden" : "Du klarade banan";
   updateWorldStrip();
-  elements.platformLayer.innerHTML = "";
-  elements.doorTrack.innerHTML = `
-    <div class="door-card active" style="left:42%; bottom:${worldConfig.groundHeight + 24}px;">
-      <div class="door-top">GG</div>
-      <p>${escapeHtml(character.name)} tog sig genom hela ${mode.name}.</p>
-    </div>
-  `;
+  elements.obbyPanel.hidden = mode.simpleChat;
+  elements.coachPanel.hidden = !mode.simpleChat;
+  if (mode.simpleChat) {
+    elements.coachPrompt.textContent = `${character.name} klarade hela ${mode.name}. Nu kan du läsa återkopplingen och spela igen.`;
+  } else {
+    elements.platformLayer.innerHTML = "";
+    elements.doorTrack.innerHTML = `
+      <div class="door-card active" style="left:42%; bottom:${worldConfig.groundHeight + 24}px;">
+        <div class="door-top">GG</div>
+        <p>${escapeHtml(character.name)} tog sig genom hela ${mode.name}.</p>
+      </div>
+    `;
+  }
   elements.textAnswerPanel.hidden = true;
   elements.feedbackBox.className = "feedback-box good";
   elements.feedbackBox.innerHTML = `<strong>GG!</strong> Du samlade ${state.xp} XP, ${state.gems} gems, ${state.textWins} textvinster och ${state.hardWins} boss-segrar.`;
@@ -1280,7 +1437,7 @@ function showResults() {
     const item = document.createElement("div");
     item.className = "review-item";
     item.innerHTML =
-      "<div class=\"badge-icon\">GG</div><div><strong>Allt satt!</strong><span>Du svarade rätt på varje fråga i hela obbyn.</span></div>";
+      "<div class=\"badge-icon\">GG</div><div><strong>Allt satt!</strong><span>Du svarade rätt på varje fråga i hela jämförelsebanan.</span></div>";
     elements.reviewList.append(item);
   } else {
     notPerfect.slice(0, 5).forEach((answer) => {
@@ -1350,11 +1507,24 @@ function setMode(modeId) {
   startGame();
 }
 
+function isEditableElement(element) {
+  if (!element) {
+    return false;
+  }
+
+  const tagName = element.tagName;
+  return tagName === "INPUT" || tagName === "TEXTAREA" || element.isContentEditable;
+}
+
 elements.nextButton.addEventListener("click", goToNextQuestion);
 elements.restartTopButton.addEventListener("click", startGame);
 elements.playAgainButton.addEventListener("click", startGame);
 elements.saveNameButton.addEventListener("click", savePlayerName);
+elements.sidePanelToggle?.addEventListener("click", () => {
+  setSidePanelOpen(!sidePanelOpen);
+});
 elements.standardModeButton.addEventListener("click", () => setMode("standard"));
+elements.coachModeButton.addEventListener("click", () => setMode("coach"));
 elements.finalModeButton.addEventListener("click", () => setMode("final"));
 elements.moveLeftButton.addEventListener("pointerdown", (event) => {
   event.preventDefault();
@@ -1363,6 +1533,20 @@ elements.moveLeftButton.addEventListener("pointerdown", (event) => {
 elements.moveRightButton.addEventListener("pointerdown", (event) => {
   event.preventDefault();
   setMoveInput("right", true);
+});
+elements.obbyScene.addEventListener("pointerdown", (event) => {
+  if (!state.world?.active || state.grading || event.target.closest(".door-card")) {
+    return;
+  }
+
+  setSceneTargetFromClientX(event.clientX);
+});
+elements.obbyScene.addEventListener("pointermove", (event) => {
+  if (!state.world?.active || state.grading || event.buttons !== 1 || event.target.closest(".door-card")) {
+    return;
+  }
+
+  setSceneTargetFromClientX(event.clientX);
 });
 elements.jumpButton.addEventListener("click", jumpAvatar);
 elements.openDoorButton.addEventListener("click", handleOpenDoor);
@@ -1378,6 +1562,7 @@ elements.playerName.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("resize", () => {
+  syncSidePanelLayout();
   requestAnimationFrame(() => {
     if (state.world?.active) {
       syncWorldVisuals();
@@ -1394,6 +1579,10 @@ window.addEventListener("pointercancel", () => {
 });
 window.addEventListener("keydown", (event) => {
   if (state.grading || state.currentIndex >= questions.length) {
+    return;
+  }
+
+  if (isEditableElement(event.target) || isEditableElement(document.activeElement)) {
     return;
   }
 
@@ -1432,4 +1621,5 @@ window.addEventListener("keyup", (event) => {
 loadPlayerName();
 loadPreferredMode();
 loadPreferredCharacter();
+syncSidePanelLayout();
 startGame();

@@ -120,7 +120,7 @@ async function gradeWithOpenAI(question, answer, playerName) {
     body: JSON.stringify({
       model,
       instructions:
-        "Du är en varm, peppande och trygg AI-coach för ett Roblox-inspirerat quiz för en 11-åring. Bedöm bara utifrån källtexten i SOURCE_EXCERPT och fälten i payloaden. För flervalsfrågor är bara exact correctAnswer korrekt. För textfrågor ska du bedöma innehållet utifrån correctAnswer, acceptedAnswers, rubric och keyPoints. Godkänn bredare svar i egna ord om de fångar huvudidén. Ett svar behöver inte vara exakt ett ord eller exakt samma formulering som facit. Om svaret täcker de viktigaste punkterna: använd verdict 'correct'. Om svaret visar förståelse men missar en viktig del: använd verdict 'almost'. Om svaret inte visar rätt förståelse: använd verdict 'incorrect'. Var snäll med små stavfel. Skriv på enkel svenska. När verdict är 'almost' eller 'incorrect' ska tonen vara extra coachande: börja med något uppmuntrande, förklara lugnt vad som saknas och ge en liten konkret ledtråd inför nästa försök. Undvik hårda ord som 'fel' eller 'misslyckat'. feedback_title ska vara kort, varm och peppande. feedback_text ska vara högst 2 korta meningar. coach_tip ska vara 1 kort mening som hjälper barnet vidare direkt.",
+        "Du är en varm, peppande och trygg AI-coach för ett spelifierat quiz för en 11-åring. Quizet tränar jämförelser mellan judendom, kristendom och islam. Bedöm bara utifrån sourceExcerpt och fälten i payloaden. För flervalsfrågor är bara exact correctAnswer korrekt. För textfrågor ska du bedöma innehållet utifrån correctAnswer, acceptedAnswers, rubric och keyPoints. Godkänn bredare svar i egna ord om de fångar huvudidén, särskilt när eleven jämför likheter och skillnader. Ett svar behöver inte vara exakt samma formulering som facit. Om svaret täcker de viktigaste punkterna: använd verdict 'correct'. Om svaret visar förståelse men missar en viktig del: använd verdict 'almost'. Om svaret inte visar rätt förståelse: använd verdict 'incorrect'. Var snäll med små stavfel. Skriv på enkel svenska. När verdict är 'almost' eller 'incorrect' ska tonen vara extra coachande: börja med något uppmuntrande, förklara lugnt vad som saknas och ge en liten konkret ledtråd inför nästa försök. Undvik hårda ord som 'fel' eller 'misslyckat'. feedback_title ska vara kort, varm och peppande. feedback_text ska vara högst 2 korta meningar. coach_tip ska vara 1 kort mening som hjälper barnet vidare direkt.",
       input: JSON.stringify(
         {
           playerName,
@@ -198,7 +198,7 @@ const server = createServer(async (request, response) => {
       const body = JSON.parse((await readBody(request)) || "{}");
       const question = questionsById.get(body.questionId);
       const answer = typeof body.answer === "string" ? body.answer.trim() : "";
-      const playerName = typeof body.playerName === "string" ? body.playerName.trim().slice(0, 30) : "Roblox-stjärna";
+      const playerName = typeof body.playerName === "string" ? body.playerName.trim().slice(0, 30) : "Quizhjälte";
 
       if (!question) {
         sendJson(response, 400, { error: "Ogiltig fraga." });
@@ -210,7 +210,7 @@ const server = createServer(async (request, response) => {
         return;
       }
 
-      const grade = await gradeWithOpenAI(question, answer, playerName || "Roblox-stjärna");
+      const grade = await gradeWithOpenAI(question, answer, playerName || "Quizhjälte");
       sendJson(response, 200, { grade });
       return;
     }

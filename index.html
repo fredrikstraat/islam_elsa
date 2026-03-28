@@ -2,8 +2,11 @@
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Islam-Obbyn AI Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#1b254f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Abraham Quest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,37 +23,40 @@
     <main class="app-shell">
       <header class="hero panel">
         <div class="hero-copy">
-          <p class="eyebrow">Palace Quest Mode</p>
-          <h1>Islam-Obbyn</h1>
+          <p class="eyebrow">Compare Quest Mode</p>
+          <h1>Abraham Quest</h1>
           <p class="hero-text">
-            Ett ökenpalats-äventyr med obby-känsla, hemliga portar och en AI-domare
-            som bedömer både flervals- och textsvar utifrån faktatexten om islam.
+            Ett äventyrsquiz där du jämför judendom, kristendom och islam. Spring genom
+            portalerna, hitta likheter och skillnader och låt AI-domaren hjälpa dig tänka smart.
           </p>
           <div class="mode-panel">
             <div class="mode-heading">
               <h2>Välj väg</h2>
-              <span id="modeNameTag" class="mini-tag">Obby Mix</span>
+              <span id="modeNameTag" class="mini-tag">Jämförelsebana</span>
             </div>
             <div class="mode-switch">
               <button id="standardModeButton" class="mode-button active" type="button">
-                Obby Mix
+                Likhetsjakten
+              </button>
+              <button id="coachModeButton" class="mode-button coach" type="button">
+                AI-coachen
               </button>
               <button id="finalModeButton" class="mode-button final" type="button">
-                Creator Tower: Endbossbanan
+                Finalportalen
               </button>
             </div>
             <p id="modeHint" class="mode-hint">
-              Blanda flervalsfrågor och textsvar i en vanlig omgång.
+              Träna på både korta frågor och större jämförelser i samma runda.
             </p>
           </div>
           <div class="character-panel">
             <div class="mode-heading">
               <h2>Välj hjälte</h2>
-              <span class="mini-tag">Symboliska avatarer</span>
+              <span class="mini-tag">Jämförelsehjältar</span>
             </div>
             <div id="characterGrid" class="character-grid"></div>
             <p class="mode-hint">
-              Avatarerna är stiliserade och inspirerade av viktiga personer i islams historia.
+              Välj den hjälte som passar ditt sätt att tänka när du jämför religionerna.
             </p>
           </div>
         </div>
@@ -58,7 +64,7 @@
         <div class="player-card">
           <label class="name-label" for="playerName">Spelarnamn</label>
           <div class="name-row">
-            <input id="playerName" type="text" maxlength="18" value="Roblox-stjärna" />
+            <input id="playerName" type="text" maxlength="18" value="Quizhjälte" />
             <button id="saveNameButton" class="secondary-button" type="button">Spara</button>
           </div>
 
@@ -71,7 +77,7 @@
             <div id="aiStatusPill" class="status-pill">Kollar</div>
           </div>
 
-          <p id="welcomeText" class="welcome-text">Välkommen, Roblox-stjärna!</p>
+          <p id="welcomeText" class="welcome-text">Välkommen, Quizhjälte!</p>
         </div>
       </header>
 
@@ -111,31 +117,42 @@
       </section>
 
       <section class="game-grid">
-        <aside class="side-column">
-          <article class="panel mission-panel">
-            <div class="panel-heading">
-              <h2>Sidouppdrag</h2>
-              <span class="mini-tag">Bonus XP</span>
-            </div>
-            <ul id="questList" class="quest-list"></ul>
-          </article>
+        <div class="side-rail">
+          <button
+            id="sidePanelToggle"
+            class="secondary-button side-panel-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="sideColumn"
+          >
+            Visa uppdrag, banstig och badges
+          </button>
+          <aside id="sideColumn" class="side-column">
+            <article class="panel mission-panel">
+              <div class="panel-heading">
+                <h2>Sidouppdrag</h2>
+                <span class="mini-tag">Bonus XP</span>
+              </div>
+              <ul id="questList" class="quest-list"></ul>
+            </article>
 
-          <article class="panel progress-panel">
-            <div class="panel-heading">
-              <h2>Banstig</h2>
-              <span id="progressText" class="mini-tag">Bana 1 av 15</span>
-            </div>
-            <div id="milestoneTrack" class="milestone-track"></div>
-          </article>
+            <article class="panel progress-panel">
+              <div class="panel-heading">
+                <h2>Banstig</h2>
+                <span id="progressText" class="mini-tag">Bana 1 av 15</span>
+              </div>
+              <div id="milestoneTrack" class="milestone-track"></div>
+            </article>
 
-          <article class="panel badges-panel">
-            <div class="panel-heading">
-              <h2>Badges</h2>
-              <span class="mini-tag">Lås upp fler</span>
-            </div>
-            <div id="badgeTray" class="badge-tray"></div>
-          </article>
-        </aside>
+            <article class="panel badges-panel">
+              <div class="panel-heading">
+                <h2>Badges</h2>
+                <span class="mini-tag">Lås upp fler</span>
+              </div>
+              <div id="badgeTray" class="badge-tray"></div>
+            </article>
+          </aside>
+        </div>
 
         <section class="panel quiz-panel">
           <div class="quiz-top">
@@ -152,7 +169,7 @@
 
           <h2 id="questionText" class="question-text"></h2>
 
-          <section class="obby-panel">
+          <section id="obbyPanel" class="obby-panel">
             <div class="panel-heading">
               <h2 id="stageTitle">Dörrbanan</h2>
               <span id="stageInstruction" class="mini-tag">Välj rätt dörr</span>
@@ -160,11 +177,11 @@
             <div class="world-strip">
               <div class="world-card">
                 <span class="hud-label">Värld</span>
-                <strong id="worldName">Spawn Square</strong>
+                <strong id="worldName">Rotporten</strong>
               </div>
               <div class="world-card">
                 <span class="hud-label">Uppdrag</span>
-                <span id="characterMission">Välj hjälte och spring mot rätt port.</span>
+                <span id="characterMission">Välj hjälte och börja jämföra de tre religionerna.</span>
               </div>
             </div>
             <div id="obbyScene" class="obby-scene">
@@ -185,12 +202,28 @@
               <button id="moveRightButton" class="control-button" type="button">→</button>
               <button id="openDoorButton" class="control-button open" type="button">Öppna dörr</button>
             </div>
+            <p id="controlHint" class="control-hint">
+              iPad-läge: tryck i världen för att gå dit, eller använd knapparna för finstyrning.
+            </p>
+          </section>
+
+          <section id="coachPanel" class="coach-panel" hidden>
+            <div class="panel-heading">
+              <h2>AI-coachen frågar</h2>
+              <span class="mini-tag">En fråga i taget</span>
+            </div>
+            <div class="coach-bubble">
+              <p id="coachPrompt" class="coach-prompt"></p>
+              <p class="coach-subprompt">
+                Svara med egna ord. AI-coachen rättar och förklarar direkt.
+              </p>
+            </div>
           </section>
 
           <div id="choices" class="choices" role="list"></div>
 
           <section id="textAnswerPanel" class="text-answer-panel" hidden>
-            <label class="text-answer-label" for="textAnswer">Skriv ditt svar</label>
+            <label id="textAnswerLabel" class="text-answer-label" for="textAnswer">Skriv ditt svar</label>
             <textarea
               id="textAnswer"
               rows="4"
@@ -198,7 +231,7 @@
               placeholder="Skriv ett kort svar. Ett eller några ord räcker ofta."
             ></textarea>
             <div class="submit-answer-row">
-              <span class="text-help">AI-domaren godkänner korta svar och små stavfel.</span>
+              <span id="textHelp" class="text-help">AI-domaren godkänner korta svar och små stavfel.</span>
               <button id="submitTextButton" class="primary-button" type="button">
                 Skicka till AI-domaren
               </button>
