@@ -245,6 +245,7 @@ const elements = {
   standardModeButton: document.querySelector("#standardModeButton"),
   coachModeButton: document.querySelector("#coachModeButton"),
   finalModeButton: document.querySelector("#finalModeButton"),
+  mobileSetupToggle: document.querySelector("#mobileSetupToggle"),
   modeNameTag: document.querySelector("#modeNameTag"),
   modeHint: document.querySelector("#modeHint"),
   characterGrid: document.querySelector("#characterGrid"),
@@ -311,12 +312,16 @@ let currentMode = "standard";
 let selectedCharacterId = "likhetsjagaren";
 let worldLoopId = 0;
 let sidePanelOpen = false;
+let mobileSetupOpen = false;
 const isTouchDevice =
   (typeof window !== "undefined" && window.matchMedia?.("(hover: none) and (pointer: coarse)")?.matches) ||
   (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0);
 const compactLayoutQuery =
   typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(max-width: 1100px)") : null;
+const mobileLayoutQuery =
+  typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(max-width: 760px)") : null;
 let lastCompactLayout = compactLayoutQuery?.matches ?? false;
+let lastMobileLayout = mobileLayoutQuery?.matches ?? false;
 
 function escapeHtml(value) {
   return String(value)
@@ -398,6 +403,9 @@ function savePlayerName() {
   }
   elements.welcomeText.textContent = `Välkommen, ${safeName}!`;
   showToast(`Namnskylten är sparad för ${safeName}.`);
+  if (mobileLayoutQuery?.matches) {
+    setMobileSetupOpen(false);
+  }
 }
 
 function loadPlayerName() {
@@ -463,6 +471,9 @@ function setCharacter(characterId) {
   updateAvatarVisual();
   updateWorldStrip(questions[state.currentIndex]);
   showToast(`${getSelectedCharacter().name} är redo för jämförelsebanan!`);
+  if (mobileLayoutQuery?.matches) {
+    setMobileSetupOpen(false);
+  }
 }
 
 function renderModeSelector() {
@@ -684,6 +695,31 @@ function setSidePanelOpen(open) {
   elements.sidePanelToggle.textContent = open
     ? "Dölj uppdrag, banstig och badges"
     : "Visa uppdrag, banstig och badges";
+}
+
+function setMobileSetupOpen(open) {
+  mobileSetupOpen = open;
+  document.body.classList.toggle("mobile-setup-open", open);
+  if (elements.mobileSetupToggle) {
+    elements.mobileSetupToggle.setAttribute("aria-expanded", String(open));
+    elements.mobileSetupToggle.textContent = open ? "Dölj inställningar" : "Visa inställningar";
+  }
+}
+
+function syncMobileSetupLayout() {
+  const mobile = mobileLayoutQuery?.matches ?? false;
+  if (mobile === lastMobileLayout) {
+    setMobileSetupOpen(mobile ? mobileSetupOpen : true);
+    return;
+  }
+
+  lastMobileLayout = mobile;
+  if (!mobile) {
+    setMobileSetupOpen(true);
+    return;
+  }
+
+  setMobileSetupOpen(false);
 }
 
 function syncSidePanelLayout() {
@@ -1504,6 +1540,9 @@ function setMode(modeId) {
   currentMode = modeId;
   savePreferredMode();
   renderModeSelector();
+  if (mobileLayoutQuery?.matches) {
+    setMobileSetupOpen(false);
+  }
   startGame();
 }
 
@@ -1520,6 +1559,9 @@ elements.nextButton.addEventListener("click", goToNextQuestion);
 elements.restartTopButton.addEventListener("click", startGame);
 elements.playAgainButton.addEventListener("click", startGame);
 elements.saveNameButton.addEventListener("click", savePlayerName);
+elements.mobileSetupToggle?.addEventListener("click", () => {
+  setMobileSetupOpen(!mobileSetupOpen);
+});
 elements.sidePanelToggle?.addEventListener("click", () => {
   setSidePanelOpen(!sidePanelOpen);
 });
@@ -1562,6 +1604,7 @@ elements.playerName.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("resize", () => {
+  syncMobileSetupLayout();
   syncSidePanelLayout();
   requestAnimationFrame(() => {
     if (state.world?.active) {
@@ -1621,5 +1664,6 @@ window.addEventListener("keyup", (event) => {
 loadPlayerName();
 loadPreferredMode();
 loadPreferredCharacter();
+syncMobileSetupLayout();
 syncSidePanelLayout();
 startGame();
