@@ -27,6 +27,51 @@
 
       <section id="statusBanner" class="status-banner is-hidden"></section>
 
+      <section class="meja-dock" aria-label="Meja och progress">
+        <article class="meja-dock-card meja-dock-hero">
+          <div class="meja-thumb-wrap" aria-hidden="true">
+            <div class="meja-thumb-base">
+              <img src="/meja.png" alt="" />
+            </div>
+            <div id="cavapooFill" class="meja-thumb-fill">
+              <img src="/meja.png" alt="" />
+            </div>
+          </div>
+
+          <div class="meja-dock-copy">
+            <p class="card-label">Meja-mätaren</p>
+            <strong id="masteryPercent" class="meja-dock-percent">0%</strong>
+            <p id="learningSummary" class="meja-dock-text">
+              Elsa har inte börjat fylla sin Cavapoo-mätare ännu.
+            </p>
+          </div>
+        </article>
+
+        <article class="meja-dock-card">
+          <p class="card-label">Tassar</p>
+          <strong id="pawCount" class="meja-dock-stat">0</strong>
+          <p id="pawCaption" class="meja-dock-text">Varje tränad fråga kan ge nya tassar.</p>
+        </article>
+
+        <article class="meja-dock-card">
+          <p class="card-label">Från pappren</p>
+          <strong id="coverageStat" class="meja-dock-stat">0 av 17 provade</strong>
+          <p id="coverageCaption" class="meja-dock-text">Ni ser hur många frågor Elsa faktiskt hunnit svara på.</p>
+        </article>
+
+        <article class="meja-dock-card">
+          <p class="card-label">Pass</p>
+          <strong id="passStat" class="meja-dock-stat">0 hela pass</strong>
+          <p id="passCaption" class="meja-dock-text">När Elsa svarat på alla frågor räknas ett helt pass.</p>
+        </article>
+
+        <article class="meja-dock-card">
+          <p class="card-label">Mejas nivå</p>
+          <strong id="rewardTitle" class="meja-dock-stat">Valpstart</strong>
+          <p id="rewardHint" class="meja-dock-text">Fortsätt svara för att låsa upp nya hundtitlar.</p>
+        </article>
+      </section>
+
       <section class="workspace">
         <section class="question-card">
           <div class="card-top">
@@ -59,6 +104,11 @@
             <button id="coachButton" class="button button-helper">Jag behöver coach-hjälp</button>
             <button id="nextButton" class="button button-secondary">Ny fråga</button>
           </div>
+
+          <section id="rewardToast" class="reward-toast is-hidden" aria-live="polite">
+            <p id="rewardToastTitle" class="reward-toast-title"></p>
+            <p id="rewardToastText" class="reward-toast-text"></p>
+          </section>
 
           <section id="coachPanel" class="coach-panel is-hidden">
             <p class="card-label">Coach-hjälp</p>

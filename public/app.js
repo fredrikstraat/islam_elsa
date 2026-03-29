@@ -3,7 +3,35 @@ const state = {
   currentQuestion: null,
   answeredIds: new Set(),
   focusAnsweredIds: new Set(),
-  focusTarget: 0
+  focusTarget: 0,
+  rewardedIds: new Set(),
+  pawCount: 0,
+  learningByQuestion: {},
+  currentPassIds: new Set(),
+  completedPasses: 0
+};
+
+const REWARD_STORAGE_KEY = "religion-elsa-paws-v1";
+const REWARDED_IDS_STORAGE_KEY = "religion-elsa-rewarded-v1";
+const LEARNING_PROGRESS_STORAGE_KEY = "religion-elsa-learning-v1";
+const PASS_PROGRESS_STORAGE_KEY = "religion-elsa-pass-v1";
+const REWARD_LEVELS = [
+  { paws: 0, name: "Valpstart" },
+  { paws: 6, name: "Tasskompis" },
+  { paws: 14, name: "Mejas hjälpreda" },
+  { paws: 24, name: "Cavapoo-pluggare" },
+  { paws: 36, name: "Tassproffs" },
+  { paws: 50, name: "Cavapoo-mästare" }
+];
+const GRADE_ORDER = {
+  "Öva lite till": 0,
+  "På väg": 1,
+  Säkert: 2
+};
+const GRADE_PROGRESS = {
+  "Öva lite till": 0.34,
+  "På väg": 0.67,
+  Säkert: 1
 };
 
 const statusBanner = document.querySelector("#statusBanner");
@@ -32,6 +60,20 @@ const idealAnswerText = document.querySelector("#idealAnswerText");
 const feedbackEmpty = document.querySelector("#feedbackEmpty");
 const practiceProgress = document.querySelector("#practiceProgress");
 const progressCaption = document.querySelector("#progressCaption");
+const pawCount = document.querySelector("#pawCount");
+const pawCaption = document.querySelector("#pawCaption");
+const rewardTitle = document.querySelector("#rewardTitle");
+const rewardHint = document.querySelector("#rewardHint");
+const rewardToast = document.querySelector("#rewardToast");
+const rewardToastTitle = document.querySelector("#rewardToastTitle");
+const rewardToastText = document.querySelector("#rewardToastText");
+const cavapooFill = document.querySelector("#cavapooFill");
+const masteryPercent = document.querySelector("#masteryPercent");
+const learningSummary = document.querySelector("#learningSummary");
+const coverageStat = document.querySelector("#coverageStat");
+const coverageCaption = document.querySelector("#coverageCaption");
+const passStat = document.querySelector("#passStat");
+const passCaption = document.querySelector("#passCaption");
 
 async function fetchJson(url, options) {
   const response = await fetch(url, options);
@@ -54,6 +96,239 @@ function hideStatus() {
   statusBanner.textContent = "";
 }
 
+function loadRewards() {
+  try {
+    const savedPaws = Number(localStorage.getItem(REWARD_STORAGE_KEY) || "0");
+    const savedRewardedIds = JSON.parse(
+      localStorage.getItem(REWARDED_IDS_STORAGE_KEY) || "[]"
+    );
+
+    state.pawCount = Number.isFinite(savedPaws) ? savedPaws : 0;
+    state.rewardedIds = new Set(Array.isArray(savedRewardedIds) ? savedRewardedIds : []);
+  } catch {
+    state.pawCount = 0;
+    state.rewardedIds = new Set();
+  }
+}
+
+function saveRewards() {
+  localStorage.setItem(REWARD_STORAGE_KEY, String(state.pawCount));
+  localStorage.setItem(
+    REWARDED_IDS_STORAGE_KEY,
+    JSON.stringify([...state.rewardedIds])
+  );
+}
+
+function loadLearningProgress() {
+  try {
+    const savedLearning = JSON.parse(
+      localStorage.getItem(LEARNING_PROGRESS_STORAGE_KEY) || "{}"
+    );
+    const savedPassData = JSON.parse(
+      localStorage.getItem(PASS_PROGRESS_STORAGE_KEY) ||
+        "{\"completedPasses\":0,\"currentPassIds\":[]}"
+    );
+
+    state.learningByQuestion =
+      savedLearning && typeof savedLearning === "object" ? savedLearning : {};
+    state.completedPasses = Number(savedPassData.completedPasses) || 0;
+    state.currentPassIds = new Set(
+      Array.isArray(savedPassData.currentPassIds) ? savedPassData.currentPassIds : []
+    );
+  } catch {
+    state.learningByQuestion = {};
+    state.completedPasses = 0;
+    state.currentPassIds = new Set();
+  }
+}
+
+function saveLearningProgress() {
+  localStorage.setItem(
+    LEARNING_PROGRESS_STORAGE_KEY,
+    JSON.stringify(state.learningByQuestion)
+  );
+  localStorage.setItem(
+    PASS_PROGRESS_STORAGE_KEY,
+    JSON.stringify({
+      completedPasses: state.completedPasses,
+      currentPassIds: [...state.currentPassIds]
+    })
+  );
+}
+
+function getRewardLevelInfo() {
+  let currentLevel = REWARD_LEVELS[0];
+  let currentIndex = 0;
+
+  REWARD_LEVELS.forEach((level, index) => {
+    if (state.pawCount >= level.paws) {
+      currentLevel = level;
+      currentIndex = index;
+    }
+  });
+
+  return {
+    level: currentLevel,
+    index: currentIndex,
+    nextLevel: REWARD_LEVELS[currentIndex + 1] || null
+  };
+}
+
+function updateRewardPanel() {
+  const { level, nextLevel } = getRewardLevelInfo();
+  const pawsLeft = nextLevel ? Math.max(nextLevel.paws - state.pawCount, 0) : 0;
+
+  pawCount.textContent = String(state.pawCount);
+  rewardTitle.textContent = level.name;
+  pawCaption.textContent =
+    state.pawCount === 1
+      ? "Elsa har samlat 1 tass."
+      : `Elsa har samlat ${state.pawCount} tassar.`;
+  rewardHint.textContent = nextLevel
+    ? `${pawsLeft} tassar kvar till ${nextLevel.name}.`
+    : "Alla hundnivåer är upplåsta.";
+}
+
+function showRewardToast(title, text) {
+  rewardToastTitle.textContent = title;
+  rewardToastText.textContent = text;
+  rewardToast.classList.remove("is-hidden");
+}
+
+function hideRewardToast() {
+  rewardToast.classList.add("is-hidden");
+  rewardToastTitle.textContent = "";
+  rewardToastText.textContent = "";
+}
+
+function getPawReward(gradeBand) {
+  if (gradeBand === "Säkert") {
+    return 3;
+  }
+
+  if (gradeBand === "På väg") {
+    return 2;
+  }
+
+  return 1;
+}
+
+function applyRewardForAnswer(questionId, gradeBand) {
+  const alreadyRewarded = state.rewardedIds.has(questionId);
+  const previousLevelIndex = getRewardLevelInfo().index;
+
+  if (alreadyRewarded) {
+    showRewardToast(
+      "Meja hejar ändå",
+      "Den här frågan är redan räknad. Nästa fråga kan ge fler tassavtryck."
+    );
+    return;
+  }
+
+  const pawsEarned = getPawReward(gradeBand);
+  state.pawCount += pawsEarned;
+  state.rewardedIds.add(questionId);
+  saveRewards();
+  updateRewardPanel();
+
+  const { level, index } = getRewardLevelInfo();
+  if (index > previousLevelIndex) {
+    showRewardToast(
+      `Ny nivå: ${level.name}!`,
+      `Elsa fick ${pawsEarned} tassar och låste upp en ny hundnivå.`
+    );
+    return;
+  }
+
+  showRewardToast(
+    `+${pawsEarned} tassar`,
+    gradeBand === "Säkert"
+      ? "Meja viftar extra mycket på svansen för det svaret."
+      : "Bra kämpat. Små steg framåt ger också nya tassar."
+  );
+}
+
+function getMasteredCount() {
+  return state.questions.filter((question) => {
+    const progress = state.learningByQuestion[question.id];
+    return progress?.bestBand === "Säkert";
+  }).length;
+}
+
+function getLearningScore() {
+  return state.questions.reduce((total, question) => {
+    const progress = state.learningByQuestion[question.id];
+    return total + (GRADE_PROGRESS[progress?.bestBand] ?? 0);
+  }, 0);
+}
+
+function getCoveredCount() {
+  return state.questions.filter((question) => {
+    const progress = state.learningByQuestion[question.id];
+    return Boolean(progress?.attempts);
+  }).length;
+}
+
+function updateLearningPanel() {
+  const total = Math.max(state.questions.length, 1);
+  const mastered = getMasteredCount();
+  const covered = getCoveredCount();
+  const currentPassCount = state.currentPassIds.size;
+  const learningScore = getLearningScore();
+  const percent = Math.round((learningScore / total) * 100);
+
+  cavapooFill.style.clipPath = `inset(${100 - percent}% 0 0 0)`;
+  masteryPercent.textContent = `${percent}%`;
+  learningSummary.textContent =
+    covered === 0
+      ? "Meja börjar fyllas så fort Elsa svarar."
+      : mastered === 0
+        ? `Elsa är igång. ${covered} frågor är påbörjade och Meja fylls steg för steg.`
+        : `Elsa har ${mastered} av ${total} frågor som sitter säkert just nu.`;
+  coverageStat.textContent = `${covered} av ${total} provade`;
+  coverageCaption.textContent =
+    covered === total
+      ? "Alla frågor från underlaget har blivit besvarade minst en gång."
+      : "Ni ser hur många frågor Elsa faktiskt hunnit svara på från hela underlaget.";
+  passStat.textContent =
+    state.completedPasses === 1
+      ? "1 helt pass"
+      : `${state.completedPasses} hela pass`;
+  passCaption.textContent =
+    currentPassCount === 0 && state.completedPasses > 0
+      ? "Nytt pass har börjat. Nu fylls nästa runda från början."
+      : `${currentPassCount} av ${total} frågor i det pågående passet.`;
+}
+
+function updateLearningProgressForAnswer(questionId, gradeBand) {
+  const previous = state.learningByQuestion[questionId] || {
+    attempts: 0,
+    bestBand: "Öva lite till"
+  };
+  const previousRank = GRADE_ORDER[previous.bestBand] ?? 0;
+  const newRank = GRADE_ORDER[gradeBand] ?? 0;
+
+  state.learningByQuestion[questionId] = {
+    attempts: previous.attempts + 1,
+    bestBand: newRank > previousRank ? gradeBand : previous.bestBand,
+    lastBand: gradeBand,
+    lastAnsweredAt: new Date().toISOString()
+  };
+
+  state.currentPassIds.add(questionId);
+
+  let completedPass = false;
+  if (state.currentPassIds.size >= state.questions.length && state.questions.length > 0) {
+    state.completedPasses += 1;
+    state.currentPassIds = new Set();
+    completedPass = true;
+  }
+
+  saveLearningProgress();
+  updateLearningPanel();
+  return completedPass;
+}
+
 function resetFeedback() {
   feedbackPanel.classList.add("is-empty");
   feedbackEmpty.classList.remove("is-hidden");
@@ -65,6 +340,7 @@ function resetFeedback() {
   nextStepText.textContent = "";
   miniHintText.textContent = "";
   idealAnswerText.textContent = "";
+  hideRewardToast();
 }
 
 function resetCoachPanel() {
@@ -146,7 +422,6 @@ function renderFeedback(feedback) {
   nextStepText.textContent = feedback.nextStep;
   miniHintText.textContent = feedback.miniHint;
   idealAnswerText.textContent = feedback.idealAnswer;
-  answerInput.blur();
   feedbackPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
@@ -169,6 +444,8 @@ async function loadApp() {
 
     state.questions = questions.questions;
     state.focusTarget = questions.focusCount;
+    loadRewards();
+    loadLearningProgress();
 
     if (!status.configured) {
       showStatus(
@@ -180,6 +457,8 @@ async function loadApp() {
     }
 
     updatePracticeProgress();
+    updateRewardPanel();
+    updateLearningPanel();
     chooseNextQuestion();
   } catch (error) {
     showStatus(error.message, "error");
@@ -221,7 +500,16 @@ async function checkAnswer() {
     }
 
     updatePracticeProgress();
+    const completedPass = updateLearningProgressForAnswer(
+      state.currentQuestion.id,
+      data.feedback.gradeBand
+    );
+    applyRewardForAnswer(state.currentQuestion.id, data.feedback.gradeBand);
     renderFeedback(data.feedback);
+
+    if (completedPass) {
+      showStatus("Elsa har klarat ett helt pass genom alla frågor. Snyggt jobbat!", "ok");
+    }
   } catch (error) {
     showStatus(error.message, "error");
   } finally {
