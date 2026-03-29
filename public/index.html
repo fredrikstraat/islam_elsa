@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4e8f7f" />
+    <title>Religion med Elsa</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="app-header">
+        <div>
+          <p class="app-kicker">Religionsprov</p>
+          <h1>Jämför religionerna med Elsa</h1>
+          <p class="app-subtitle">
+            En fråga i taget. Kort hjälp. Tydlig feedback direkt.
+          </p>
+        </div>
+        <div class="header-progress">
+          <p id="progressCaption" class="progress-caption">0 av 9 fokusfrågor tränade</p>
+          <div class="progress-track">
+            <span id="practiceProgress" class="progress-fill"></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="statusBanner" class="status-banner is-hidden"></section>
+
+      <section class="workspace">
+        <section class="question-card">
+          <div class="card-top">
+            <div>
+              <p class="card-label">Fråga</p>
+              <h2 id="questionPrompt">Laddar fråga ...</h2>
+            </div>
+            <div class="badges">
+              <span id="focusBadge" class="badge badge-focus is-hidden">Viktigt till provet</span>
+              <span id="sectionBadge" class="badge badge-soft">Avsnitt</span>
+              <span id="levelBadge" class="badge badge-strong">Niva</span>
+            </div>
+          </div>
+
+          <p id="questionHint" class="question-hint"></p>
+
+          <label class="answer-label" for="answerInput">Elsas svar</label>
+          <textarea
+            id="answerInput"
+            rows="5"
+            placeholder="Skriv kort. En eller två tydliga meningar räcker ofta."
+            autocapitalize="sentences"
+            autocomplete="off"
+            autocorrect="on"
+            enterkeyhint="send"
+          ></textarea>
+
+          <div class="actions">
+            <button id="checkButton" class="button button-primary">Kolla svar</button>
+            <button id="coachButton" class="button button-helper">Jag behöver coach-hjälp</button>
+            <button id="nextButton" class="button button-secondary">Ny fråga</button>
+          </div>
+
+          <section id="coachPanel" class="coach-panel is-hidden">
+            <p class="card-label">Coach-hjälp</p>
+            <div class="coach-grid">
+              <div class="coach-item">
+                <p class="coach-label">Frågan betyder</p>
+                <p id="coachMeaning"></p>
+              </div>
+              <div class="coach-item">
+                <p class="coach-label">Börja med detta</p>
+                <p id="coachStep"></p>
+              </div>
+              <div class="coach-item coach-item-wide">
+                <p class="coach-label">Du kan starta så här</p>
+                <p id="coachStarter"></p>
+              </div>
+              <div class="coach-item coach-item-wide">
+                <p class="coach-label">Boknära ledtråd</p>
+                <p id="coachBook"></p>
+              </div>
+              <div class="coach-item coach-item-wide">
+                <p class="coach-label">Bra ord att få med</p>
+                <p id="coachWords"></p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section id="feedbackPanel" class="feedback-panel is-empty">
+          <div class="feedback-head">
+            <div>
+              <p class="card-label">Feedback</p>
+              <h3 id="feedbackTitle">Här ser Elsa direkt vad som redan sitter och vad som ska läggas till.</h3>
+            </div>
+            <div id="gradeBadge" class="grade-badge">-</div>
+          </div>
+
+          <p id="feedbackEmpty" class="feedback-empty">
+            Skriv ett svar och tryck på <strong>Kolla svar</strong>.
+          </p>
+
+          <div class="feedback-grid">
+            <article class="feedback-card">
+              <p class="feedback-label">Bra i svaret</p>
+              <ul id="strengthList"></ul>
+            </article>
+
+            <article class="feedback-card">
+              <p class="feedback-label">Lägg till detta</p>
+              <p id="nextStepText"></p>
+              <p class="feedback-label feedback-label-space">Mini-ledtråd</p>
+              <p id="miniHintText"></p>
+            </article>
+
+            <article class="feedback-card feedback-card-wide">
+              <p class="feedback-label">Ett starkare svar kan låta så här</p>
+              <p id="idealAnswerText"></p>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
