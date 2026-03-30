@@ -1,6 +1,7 @@
 const state = {
   questions: [],
   currentQuestion: null,
+  recentQuestionIds: [],
   answeredIds: new Set(),
   focusAnsweredIds: new Set(),
   focusTarget: 0,
@@ -15,6 +16,8 @@ const REWARD_STORAGE_KEY = "religion-elsa-paws-v1";
 const REWARDED_IDS_STORAGE_KEY = "religion-elsa-rewarded-v1";
 const LEARNING_PROGRESS_STORAGE_KEY = "religion-elsa-learning-v1";
 const PASS_PROGRESS_STORAGE_KEY = "religion-elsa-pass-v1";
+const RECENT_QUESTIONS_STORAGE_KEY = "religion-elsa-recent-questions-v1";
+const RECENT_QUESTION_LIMIT = 5;
 const REWARD_LEVELS = [
   { paws: 0, name: "Valpstart" },
   { paws: 6, name: "Tasskompis" },
@@ -44,17 +47,20 @@ const answerInput = document.querySelector("#answerInput");
 const checkButton = document.querySelector("#checkButton");
 const coachButton = document.querySelector("#coachButton");
 const nextButton = document.querySelector("#nextButton");
-const coachPanel = document.querySelector("#coachPanel");
+const coachModal = document.querySelector("#coachModal");
+const coachCloseButton = document.querySelector("#coachCloseButton");
 const coachMeaning = document.querySelector("#coachMeaning");
 const coachStep = document.querySelector("#coachStep");
 const coachStarterText = document.querySelector("#coachStarter");
 const coachBook = document.querySelector("#coachBook");
 const coachWords = document.querySelector("#coachWords");
-const feedbackPanel = document.querySelector("#feedbackPanel");
+const feedbackModal = document.querySelector("#feedbackModal");
+const feedbackCloseButton = document.querySelector("#feedbackCloseButton");
 const feedbackTitle = document.querySelector("#feedbackTitle");
 const gradeBadge = document.querySelector("#gradeBadge");
 const strengthList = document.querySelector("#strengthList");
 const nextStepText = document.querySelector("#nextStepText");
+const textReferenceText = document.querySelector("#textReferenceText");
 const miniHintText = document.querySelector("#miniHintText");
 const idealAnswerText = document.querySelector("#idealAnswerText");
 const feedbackEmpty = document.querySelector("#feedbackEmpty");
@@ -84,6 +90,20 @@ async function fetchJson(url, options) {
   }
 
   return data;
+}
+
+function setPopupOpen(popup, open) {
+  popup.classList.toggle("is-hidden", !open);
+  popup.setAttribute("aria-hidden", String(!open));
+  const anyPopupOpen =
+    !coachModal.classList.contains("is-hidden") ||
+    !feedbackModal.classList.contains("is-hidden");
+  document.body.classList.toggle("popup-open", anyPopupOpen);
+}
+
+function closeAllPopups() {
+  setPopupOpen(coachModal, false);
+  setPopupOpen(feedbackModal, false);
 }
 
 function showStatus(message, tone = "info") {
@@ -140,6 +160,26 @@ function loadLearningProgress() {
     state.completedPasses = 0;
     state.currentPassIds = new Set();
   }
+}
+
+function loadRecentQuestions() {
+  try {
+    const savedRecent = JSON.parse(
+      localStorage.getItem(RECENT_QUESTIONS_STORAGE_KEY) || "[]"
+    );
+    state.recentQuestionIds = Array.isArray(savedRecent)
+      ? savedRecent.slice(0, RECENT_QUESTION_LIMIT)
+      : [];
+  } catch {
+    state.recentQuestionIds = [];
+  }
+}
+
+function saveRecentQuestions() {
+  localStorage.setItem(
+    RECENT_QUESTIONS_STORAGE_KEY,
+    JSON.stringify(state.recentQuestionIds.slice(0, RECENT_QUESTION_LIMIT))
+  );
 }
 
 function saveLearningProgress() {
@@ -330,7 +370,7 @@ function updateLearningProgressForAnswer(questionId, gradeBand) {
 }
 
 function resetFeedback() {
-  feedbackPanel.classList.add("is-empty");
+  setPopupOpen(feedbackModal, false);
   feedbackEmpty.classList.remove("is-hidden");
   feedbackTitle.textContent =
     "Här ser Elsa direkt vad som redan sitter och vad som ska läggas till.";
@@ -338,13 +378,14 @@ function resetFeedback() {
   gradeBadge.dataset.band = "";
   strengthList.innerHTML = "";
   nextStepText.textContent = "";
+  textReferenceText.textContent = "";
   miniHintText.textContent = "";
   idealAnswerText.textContent = "";
   hideRewardToast();
 }
 
 function resetCoachPanel() {
-  coachPanel.classList.add("is-hidden");
+  setPopupOpen(coachModal, false);
   coachMeaning.textContent = "";
   coachStep.textContent = "";
   coachStarterText.textContent = "";
@@ -354,42 +395,132 @@ function resetCoachPanel() {
   coachButton.textContent = "Jag behöver coach-hjälp";
 }
 
+function lowercaseFirst(text) {
+  if (!text) {
+    return "";
+  }
+
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+function uniqueTexts(values) {
+  return [...new Set(values.filter(Boolean).map((value) => value.trim()))];
+}
+
+function getPromptOptions(question) {
+  return uniqueTexts([
+    question.prompt,
+    `Förklara med egna ord: ${lowercaseFirst(question.prompt)}`,
+    `Visa att du kan detta: ${lowercaseFirst(question.prompt)}`
+  ]);
+}
+
+function getHintOptions(question) {
+  return uniqueTexts([
+    question.hint,
+    `Tips från texten: ${question.hint}`,
+    `Börja här: ${question.hint}`
+  ]);
+}
+
+function pickRandomItem(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return "";
+  }
+
+  const index = Math.floor(Math.random() * items.length);
+  return items[index];
+}
+
+function buildQuestionCopy(question) {
+  return {
+    prompt: pickRandomItem(getPromptOptions(question)) || question.prompt,
+    hint: pickRandomItem(getHintOptions(question)) || question.hint
+  };
+}
+
+function rememberQuestion(questionId) {
+  const withoutCurrent = state.recentQuestionIds.filter((id) => id !== questionId);
+  state.recentQuestionIds = [questionId, ...withoutCurrent].slice(0, RECENT_QUESTION_LIMIT);
+  saveRecentQuestions();
+}
+
+function pickBestQuestion(candidates) {
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  const ranked = [...candidates]
+    .map((question) => {
+      const progress = state.learningByQuestion[question.id] || {};
+      const attempts = Number(progress.attempts) || 0;
+      const bandRank = GRADE_ORDER[progress.bestBand] ?? -1;
+      const recencyPenalty = state.recentQuestionIds.includes(question.id) ? 7 : 0;
+      const currentPenalty = question.id === state.currentQuestion?.id ? 12 : 0;
+      const passPenalty = state.currentPassIds.has(question.id) ? 6 : 0;
+      const focusBonus = question.isFocus ? -2 : 0;
+      const score =
+        attempts * 2 + bandRank * 3 + recencyPenalty + currentPenalty + passPenalty + focusBonus;
+
+      return {
+        question,
+        score: score + Math.random()
+      };
+    })
+    .sort((left, right) => left.score - right.score);
+
+  const finalists = ranked.slice(0, Math.min(3, ranked.length));
+  return finalists[Math.floor(Math.random() * finalists.length)].question;
+}
+
+function chooseQuestionPool() {
+  const recentSet = new Set(state.recentQuestionIds);
+  const currentId = state.currentQuestion?.id;
+  const basePool = state.questions.filter((question) => question.id !== currentId);
+  const freshFocus = basePool.filter(
+    (question) => question.isFocus && !state.currentPassIds.has(question.id)
+  );
+  const freshOthers = basePool.filter(
+    (question) => !question.isFocus && !state.currentPassIds.has(question.id)
+  );
+  const needsPractice = basePool.filter((question) => {
+    const bestBand = state.learningByQuestion[question.id]?.bestBand;
+    return bestBand !== "Säkert";
+  });
+
+  const pools = [freshFocus, freshOthers, needsPractice, basePool, state.questions];
+  for (const pool of pools) {
+    if (pool.length === 0) {
+      continue;
+    }
+
+    const nonRecent = pool.filter((question) => !recentSet.has(question.id));
+    if (nonRecent.length > 0) {
+      return nonRecent;
+    }
+
+    return pool;
+  }
+
+  return state.questions;
+}
+
 function chooseNextQuestion() {
   if (state.questions.length === 0) {
     return;
   }
 
-  const unansweredFocus = state.questions.filter(
-    (question) => question.isFocus && !state.focusAnsweredIds.has(question.id)
-  );
-  const unansweredOthers = state.questions.filter(
-    (question) => !state.answeredIds.has(question.id)
-  );
-  const nonCurrent = state.questions.filter(
-    (question) => question.id !== state.currentQuestion?.id
-  );
+  state.currentQuestion = pickBestQuestion(chooseQuestionPool()) || state.questions[0];
+  const questionCopy = buildQuestionCopy(state.currentQuestion);
 
-  let chosenPool = [];
+  rememberQuestion(state.currentQuestion.id);
 
-  if (unansweredFocus.length > 0) {
-    chosenPool = unansweredFocus;
-  } else if (unansweredOthers.length > 0) {
-    chosenPool = unansweredOthers;
-  } else if (nonCurrent.length > 0) {
-    chosenPool = nonCurrent;
-  } else {
-    chosenPool = state.questions;
-  }
-
-  const randomIndex = Math.floor(Math.random() * chosenPool.length);
-  state.currentQuestion = chosenPool[randomIndex];
-
-  questionPrompt.textContent = state.currentQuestion.prompt;
+  questionPrompt.textContent = questionCopy.prompt;
   focusBadge.textContent = state.currentQuestion.focusLabel || "Viktigt till provet";
   focusBadge.classList.toggle("is-hidden", !state.currentQuestion.isFocus);
   sectionBadge.textContent = state.currentQuestion.sectionLabel;
   levelBadge.textContent = `${state.currentQuestion.level}-nivå`;
-  questionHint.textContent = state.currentQuestion.hint;
+  questionHint.textContent = questionCopy.hint;
   answerInput.value = "";
   resetCoachPanel();
   resetFeedback();
@@ -406,7 +537,6 @@ function updatePracticeProgress() {
 }
 
 function renderFeedback(feedback) {
-  feedbackPanel.classList.remove("is-empty");
   feedbackEmpty.classList.add("is-hidden");
   feedbackTitle.textContent = feedback.encouragement;
   gradeBadge.textContent = feedback.gradeBand;
@@ -420,19 +550,19 @@ function renderFeedback(feedback) {
   });
 
   nextStepText.textContent = feedback.nextStep;
+  textReferenceText.textContent = feedback.textReference;
   miniHintText.textContent = feedback.miniHint;
   idealAnswerText.textContent = feedback.idealAnswer;
-  feedbackPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  setPopupOpen(feedbackModal, true);
 }
 
 function renderCoachHelp(coach) {
-  coachPanel.classList.remove("is-hidden");
   coachMeaning.textContent = coach.questionInSimpleWords;
   coachStep.textContent = coach.firstStep;
   coachStarterText.textContent = coach.sentenceStarter;
   coachBook.textContent = coach.bookConnection;
   coachWords.textContent = coach.lookForWords.join(", ");
-  coachPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  setPopupOpen(coachModal, true);
 }
 
 async function loadApp() {
@@ -446,6 +576,7 @@ async function loadApp() {
     state.focusTarget = questions.focusCount;
     loadRewards();
     loadLearningProgress();
+    loadRecentQuestions();
 
     if (!status.configured) {
       showStatus(
@@ -554,6 +685,44 @@ nextButton.addEventListener("click", chooseNextQuestion);
 answerInput.addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
     checkAnswer();
+  }
+});
+coachCloseButton.addEventListener("click", () => {
+  setPopupOpen(coachModal, false);
+  answerInput.focus();
+});
+feedbackCloseButton.addEventListener("click", () => {
+  setPopupOpen(feedbackModal, false);
+  answerInput.focus();
+});
+document.addEventListener("click", (event) => {
+  const closeTarget = event.target.closest("[data-close-popup]");
+  if (!closeTarget) {
+    return;
+  }
+
+  const popupName = closeTarget.getAttribute("data-close-popup");
+  if (popupName === "coach") {
+    setPopupOpen(coachModal, false);
+  }
+  if (popupName === "feedback") {
+    setPopupOpen(feedbackModal, false);
+  }
+  answerInput.focus();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") {
+    return;
+  }
+
+  if (!coachModal.classList.contains("is-hidden")) {
+    setPopupOpen(coachModal, false);
+    answerInput.focus();
+  }
+
+  if (!feedbackModal.classList.contains("is-hidden")) {
+    setPopupOpen(feedbackModal, false);
+    answerInput.focus();
   }
 });
 

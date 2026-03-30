@@ -109,41 +109,85 @@
             <p id="rewardToastTitle" class="reward-toast-title"></p>
             <p id="rewardToastText" class="reward-toast-text"></p>
           </section>
-
-          <section id="coachPanel" class="coach-panel is-hidden">
-            <p class="card-label">Coach-hjälp</p>
-            <div class="coach-grid">
-              <div class="coach-item">
-                <p class="coach-label">Frågan betyder</p>
-                <p id="coachMeaning"></p>
-              </div>
-              <div class="coach-item">
-                <p class="coach-label">Börja med detta</p>
-                <p id="coachStep"></p>
-              </div>
-              <div class="coach-item coach-item-wide">
-                <p class="coach-label">Du kan starta så här</p>
-                <p id="coachStarter"></p>
-              </div>
-              <div class="coach-item coach-item-wide">
-                <p class="coach-label">Boknära ledtråd</p>
-                <p id="coachBook"></p>
-              </div>
-              <div class="coach-item coach-item-wide">
-                <p class="coach-label">Bra ord att få med</p>
-                <p id="coachWords"></p>
-              </div>
-            </div>
-          </section>
         </section>
+      </section>
 
-        <section id="feedbackPanel" class="feedback-panel is-empty">
-          <div class="feedback-head">
+      <section
+        id="coachModal"
+        class="popup-shell is-hidden"
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="coachModalTitle"
+      >
+        <div class="popup-backdrop" data-close-popup="coach"></div>
+        <div class="popup-panel popup-panel-coach">
+          <div class="popup-head">
+            <div>
+              <p class="card-label">Coach-hjälp</p>
+              <h3 id="coachModalTitle">Vi tar det steg för steg.</h3>
+            </div>
+            <button
+              type="button"
+              class="popup-close"
+              id="coachCloseButton"
+              aria-label="Stäng coach-hjälp"
+            >
+              Stäng
+            </button>
+          </div>
+
+          <div class="coach-grid">
+            <div class="coach-item">
+              <p class="coach-label">Frågan betyder</p>
+              <p id="coachMeaning"></p>
+            </div>
+            <div class="coach-item">
+              <p class="coach-label">Börja med detta</p>
+              <p id="coachStep"></p>
+            </div>
+            <div class="coach-item coach-item-wide">
+              <p class="coach-label">Du kan starta så här</p>
+              <p id="coachStarter"></p>
+            </div>
+            <div class="coach-item coach-item-wide coach-item-book">
+              <p class="coach-label">Ledtråd från texten</p>
+              <p id="coachBook"></p>
+            </div>
+            <div class="coach-item coach-item-wide">
+              <p class="coach-label">Bra ord att få med</p>
+              <p id="coachWords"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="feedbackModal"
+        class="popup-shell is-hidden"
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedbackTitle"
+      >
+        <div class="popup-backdrop" data-close-popup="feedback"></div>
+        <div class="popup-panel popup-panel-feedback">
+          <div class="feedback-head popup-head">
             <div>
               <p class="card-label">Feedback</p>
               <h3 id="feedbackTitle">Här ser Elsa direkt vad som redan sitter och vad som ska läggas till.</h3>
             </div>
-            <div id="gradeBadge" class="grade-badge">-</div>
+            <div class="popup-head-actions">
+              <div id="gradeBadge" class="grade-badge">-</div>
+              <button
+                type="button"
+                class="popup-close"
+                id="feedbackCloseButton"
+                aria-label="Stäng feedback"
+              >
+                Stäng
+              </button>
+            </div>
           </div>
 
           <p id="feedbackEmpty" class="feedback-empty">
@@ -159,6 +203,8 @@
             <article class="feedback-card">
               <p class="feedback-label">Lägg till detta</p>
               <p id="nextStepText"></p>
+              <p class="feedback-label feedback-label-space">Ledtråd från texten</p>
+              <p id="textReferenceText"></p>
               <p class="feedback-label feedback-label-space">Mini-ledtråd</p>
               <p id="miniHintText"></p>
             </article>
@@ -168,7 +214,7 @@
               <p id="idealAnswerText"></p>
             </article>
           </div>
-        </section>
+        </div>
       </section>
     </main>
 

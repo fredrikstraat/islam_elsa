@@ -32,14 +32,13 @@ body {
 }
 
 .app-shell {
-  width: min(1120px, calc(100% - 1rem));
+  width: min(1240px, calc(100% - 1rem));
   margin: 0 auto;
   padding: 0.8rem 0 calc(1rem + env(safe-area-inset-bottom, 0px));
 }
 
 .app-header,
 .question-card,
-.feedback-panel,
 .status-banner {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -212,27 +211,111 @@ h1 {
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
-  gap: 0.85rem;
   margin-top: 0.8rem;
-  align-items: start;
 }
 
-.question-card,
-.feedback-panel {
-  background: var(--card);
-  padding: 1rem;
+.workspace > * {
+  min-width: 0;
 }
 
 .question-card {
+  background: var(--card);
+  padding: 1rem;
   border: 3px solid #d8ebe5;
   min-height: 100%;
 }
 
-.feedback-panel {
+.popup-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.popup-shell.is-hidden {
+  display: none;
+}
+
+.popup-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 31, 35, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.popup-panel {
+  position: relative;
+  z-index: 1;
+  width: min(920px, 100%);
+  max-height: min(88vh, 820px);
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 28px;
+  background: var(--card);
+  box-shadow: 0 18px 50px rgba(18, 28, 33, 0.26);
+}
+
+.popup-panel-coach {
+  border: 3px solid #d8ebe5;
+}
+
+.popup-panel-feedback {
   border: 3px solid #e7dbc0;
-  scroll-margin-top: 0.75rem;
+}
+
+.popup-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.popup-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.popup-close {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.72rem 0.95rem;
+  background: #eef1f3;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body.popup-open {
+  overflow: hidden;
+}
+
+.coach-item-book,
+.feedback-card {
+  scroll-margin-top: 1rem;
+}
+
+.feedback-grid,
+.coach-grid {
+  margin-top: 0.72rem;
+}
+
+.coach-item-book {
+  background: linear-gradient(180deg, #fff8ea, #fff2d7);
+  border-color: #ecd8a8;
+}
+
+.feedback-card {
+  background: #fff8ef;
+  border: 1px solid #efdfc3;
+}
+
+.feedback-card p,
+.coach-item p {
+  line-height: 1.45;
 }
 
 .card-top,
@@ -369,23 +452,10 @@ textarea:focus {
   color: var(--ink);
 }
 
-.coach-panel {
-  margin-top: 0.9rem;
-  padding: 0.9rem;
-  border-radius: 20px;
-  background: #f7fbfa;
-  border: 2px solid #d8ebe5;
-}
-
-.coach-panel.is-hidden {
-  display: none;
-}
-
 .coach-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
-  margin-top: 0.45rem;
 }
 
 .coach-item {
@@ -424,10 +494,6 @@ textarea:focus {
 .reward-toast-text {
   margin: 0.28rem 0 0;
   color: #694f19;
-}
-
-.feedback-panel.is-empty .feedback-grid {
-  display: none;
 }
 
 .feedback-empty {
@@ -469,14 +535,11 @@ textarea:focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
-  margin-top: 0.72rem;
 }
 
 .feedback-card {
   padding: 0.85rem;
   border-radius: 18px;
-  background: #fff8ef;
-  border: 1px solid #efdfc3;
 }
 
 .feedback-card-wide {
@@ -502,26 +565,6 @@ li + li {
   }
 }
 
-@media (max-width: 860px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .feedback-panel {
-    order: 2;
-  }
-}
-
-@media (max-width: 1100px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .feedback-panel {
-    order: 2;
-  }
-}
-
 @media (max-width: 640px) {
   .app-shell {
     width: min(100% - 0.7rem, 1120px);
@@ -530,13 +573,14 @@ li + li {
 
   .app-header,
   .question-card,
-  .feedback-panel {
+  .popup-panel {
     padding: 0.85rem;
   }
 
   .app-header,
   .card-top,
-  .feedback-head {
+  .feedback-head,
+  .popup-head {
     flex-direction: column;
     align-items: stretch;
   }
@@ -572,6 +616,22 @@ li + li {
   .coach-item-wide,
   .feedback-card-wide {
     grid-column: auto;
+  }
+
+  .popup-shell {
+    align-items: end;
+    padding: 0.35rem;
+  }
+
+  .popup-panel {
+    width: 100%;
+    max-height: min(86vh, 760px);
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+  }
+
+  .popup-head-actions {
+    justify-content: space-between;
   }
 
   textarea {

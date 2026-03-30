@@ -39,6 +39,7 @@ const feedbackSchema = {
     "encouragement",
     "whatWasGood",
     "nextStep",
+    "textReference",
     "miniHint",
     "idealAnswer"
   ],
@@ -57,6 +58,9 @@ const feedbackSchema = {
       maxItems: 3
     },
     nextStep: {
+      type: "string"
+    },
+    textReference: {
       type: "string"
     },
     miniHint: {
@@ -207,7 +211,7 @@ async function evaluateAnswer({ question, answer }) {
     "Säkert betyder att det viktigaste är med och att svaret visar tydlig förståelse.",
     "På väg betyder att eleven är på rätt spår men att en viktig del saknas.",
     "Öva lite till betyder att svaret är för tunt eller blandar ihop viktiga delar.",
-    "Ge alltid 2 eller 3 korta styrkor, ett tydligt nästa steg, en mini-ledtråd och ett starkare exempel-svar.",
+    "Ge alltid 2 eller 3 korta styrkor, ett tydligt nästa steg, en tydlig hänvisning till faktabladet, en mini-ledtråd och ett starkare exempel-svar.",
     "Var extra varm om eleven inte riktigt får till det.",
     "Nämn inte att du är en AI och skriv inte om poäng."
   ].join(" ");
@@ -221,6 +225,7 @@ async function evaluateAnswer({ question, answer }) {
       prompt: question.prompt,
       level: question.level,
       shortAnswer: question.shortAnswer,
+      bookSupport: question.bookSupport || "",
       mustMention: question.mustMention,
       goodToMention: question.goodToMention,
       stretchPoints: question.stretchPoints
@@ -230,6 +235,7 @@ async function evaluateAnswer({ question, answer }) {
       "encouragement ska vara max 18 ord",
       "whatWasGood ska innehålla 2 eller 3 korta punkter",
       "nextStep ska vara konkret och lätt att göra direkt",
+      "textReference ska börja med 'I faktabladet står' eller 'I texten står' och peka tydligt på rätt del utan att bli för lång",
       "miniHint ska vara extra kort och boknära",
       "idealAnswer ska vara 1-3 enkla meningar"
     ]
@@ -263,6 +269,7 @@ async function coachQuestion({ question }) {
     "Skriv mycket enkel svenska med korta meningar.",
     "Hjälpen ska vara boknära och bygga på faktabladen om judendom, kristendom och islam.",
     "Först förklara frågan, ge sedan ett litet första steg, en startmening och en boknära ledtråd.",
+    "När du hänvisar till materialet ska du gärna skriva som 'I faktabladet står ...' eller 'I texten kan du leta efter ...'.",
     "Ge inte ett fullt facit."
   ].join(" ");
 
@@ -281,7 +288,8 @@ async function coachQuestion({ question }) {
       "questionInSimpleWords ska vara 1-2 korta meningar",
       "firstStep ska vara ett litet tankesteg",
       "sentenceStarter ska vara en enkel början på svaret",
-      "bookConnection ska låta som en boknära ledtråd och inte ett helt facit",
+      "bookConnection ska tydligt hänvisa till faktabladet och gärna börja med 'I faktabladet står' eller 'I texten kan du leta efter'",
+      "bookConnection ska vara en boknära ledtråd och inte ett helt facit",
       "lookForWords ska vara 2 till 5 ord eller begrepp",
       "ge inte hela svaret"
     ]
@@ -318,7 +326,9 @@ function buildLocalCoachHelp(question) {
     questionInSimpleWords: `Frågan vill att du visar att du förstår: ${question.prompt}`,
     firstStep: question.hint,
     sentenceStarter: question.starter,
-    bookConnection: question.bookSupport || question.shortAnswer,
+    bookConnection: question.bookSupport
+      ? `I faktabladet står ungefär: ${question.bookSupport}`
+      : `I texten kan du leta efter något nära detta: ${question.shortAnswer}`,
     lookForWords: (question.mustMention || []).slice(0, 4)
   };
 }
